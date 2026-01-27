@@ -42,7 +42,6 @@ const Login = () => {
       });
 
       const result = await res.json();
-
       if (!res.ok) {
         toast.error(result?.message || "Login failed");
         return;
@@ -54,7 +53,15 @@ const Login = () => {
       }
 
       toast.success("Login successful");
-      router.push("/user");
+      if (result?.user?.role === "customer") {
+        router.push("/user");
+      }
+      if (result?.user?.role === "provider") {
+        router.push("/vendor");
+      }
+      if (result?.user?.role === "admin") {
+        router.push("/admin");
+      }
     } catch (error) {
       toast.error("Something went wrong");
     }
