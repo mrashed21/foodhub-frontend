@@ -1,9 +1,11 @@
-import VerifyEmail from "@/components/auth/verifiy-email/verify-email"
+import VerifyEmail from "@/components/auth/verifiy-email/verify-email";
 
 const VerifyEmailPage = () => {
-    return (
-        <section><VerifyEmail/></section>
-    )
-}
+  return (
+    <section>
+      <VerifyEmail />
+    </section>
+  );
+};
 
-export default VerifyEmailPage
+export default VerifyEmailPage;

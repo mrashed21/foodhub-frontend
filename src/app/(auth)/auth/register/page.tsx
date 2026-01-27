@@ -1,9 +1,11 @@
-import VerifyEmail from "@/components/auth/verifiy-email/verify-email"
+import Register from "@/components/auth/register/register";
 
 const RegisterPage = () => {
-    return (
-        <section><VerifyEmail/></section>
-    )
-}
+  return (
+    <section>
+      <Register />
+    </section>
+  );
+};
 
-export default RegisterPage
+export default RegisterPage;
