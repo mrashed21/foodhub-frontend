@@ -1,6 +1,8 @@
+import VerifyEmail from "@/components/auth/verifiy-email/verify-email"
+
 const VerifyEmailPage = () => {
     return (
-        <section>VerifyEmailPage</section>
+        <section><VerifyEmail/></section>
     )
 }
 
