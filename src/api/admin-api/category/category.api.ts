@@ -16,19 +16,19 @@ export interface Category {
 interface GetCategoriesParams {
   page?: number;
   limit?: number;
-  searchTerm?: string;
+  search?: string;
 }
 
 //* GET Category (pagination + search)
 const getCategoriesApi = async ({
   page = 1,
   limit = 10,
-  searchTerm,
+  search,
 }: GetCategoriesParams) => {
   const params: any = { page, limit };
 
-  if (searchTerm?.trim()) {
-    params.searchTerm = searchTerm;
+  if (search?.trim()) {
+    params.search = search;
   }
 
   const { data } = await api.get("/category", { params });
@@ -39,11 +39,11 @@ const getCategoriesApi = async ({
 export const useCategories = ({
   page = 1,
   limit = 10,
-  searchTerm,
+  search,
 }: GetCategoriesParams) => {
   return useQuery({
-    queryKey: ["categories", page, limit, searchTerm],
-    queryFn: () => getCategoriesApi({ page, limit, searchTerm }),
+    queryKey: ["categories", page, limit, search],
+    queryFn: () => getCategoriesApi({ page, limit, search }),
     // keepPreviousData: true,
   });
 };

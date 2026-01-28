@@ -1,9 +1,12 @@
+import Category from "@/components/admin/category/category";
+
+export const metadata = {
+  title: "Categories",
+};
 const CategoriesPage = () => {
   return (
-    <section className="flex-1 p-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Categories</h1>
-      </div>
+    <section className="flex-1">
+      <Category />
     </section>
   );
 };
