@@ -1,4 +1,5 @@
 import Navbar from "@/common/navbar/navbar";
+import QueryProvider from "@/providers/query-provider";
 import "bd-number-validator/react/style.css";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
@@ -29,9 +30,11 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Navbar />
-        {children}
-        <Toaster />
+        <QueryProvider>
+          <Navbar />
+          {children}
+          <Toaster />
+        </QueryProvider>
       </body>
     </html>
   );
