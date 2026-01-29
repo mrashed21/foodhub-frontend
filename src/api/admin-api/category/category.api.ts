@@ -3,9 +3,11 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 //! TYPES
 
-export interface Category {
+export interface CategoryInterface {
   id: string;
   name: string;
+  slug: string;
+  isActive: boolean;
   createdAt: string;
   published_by: {
     id: string;
@@ -49,7 +51,11 @@ export const useCategories = ({
 };
 
 //? CREATE Category
-const createCategoryApi = async (payload: { name: string }) => {
+const createCategoryApi = async (payload: {
+  name: string;
+  slug: string;
+  isActive: boolean;
+}) => {
   const { data } = await api.post("/category", payload);
   return data;
 };
@@ -66,15 +72,19 @@ export const useCreateCategory = () => {
   });
 };
 
-//todo UPDATE Category
+
+// todo UPDATE Category
 const updateCategoryApi = async ({
-  id,
   payload,
 }: {
-  id: string;
-  payload: { name: string };
+  payload: {
+    id: string;
+    name: string;
+    slug: string;
+    isActive: boolean;
+  };
 }) => {
-  const { data } = await api.patch(`/category/${id}`, payload);
+  const { data } = await api.patch("/category", payload);
   return data;
 };
 

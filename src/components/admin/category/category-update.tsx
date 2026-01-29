@@ -1,6 +1,9 @@
 "use client";
 
-import { useCreateCategory } from "@/api/admin-api/category/category.api";
+import {
+  CategoryInterface,
+  useUpdateCategory,
+} from "@/api/admin-api/category/category.api";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -12,12 +15,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { slugify } from "@/hook/slugify";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
-interface CategoryCreateModalProps {
+interface CategoryUpdateProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  editData: CategoryInterface | null;
 }
 
 type FormValues = {
@@ -25,15 +30,19 @@ type FormValues = {
   isActive: boolean;
 };
 
-const CategoryCreate = ({ open, onOpenChange }: CategoryCreateModalProps) => {
-  const { mutateAsync, isPending } = useCreateCategory();
+const CategoryUpdate = ({
+  open,
+  onOpenChange,
+  editData,
+}: CategoryUpdateProps) => {
+  const { mutateAsync, isPending } = useUpdateCategory();
 
   const {
     register,
     handleSubmit,
-    watch,
-    setValue,
     reset,
+    setValue,
+    watch,
     formState: { errors },
   } = useForm<FormValues>({
     defaultValues: {
@@ -42,21 +51,35 @@ const CategoryCreate = ({ open, onOpenChange }: CategoryCreateModalProps) => {
     },
   });
 
+  useEffect(() => {
+    if (open && editData) {
+      reset({
+        name: editData.name,
+        isActive: editData.isActive,
+      });
+    }
+  }, [open, editData, reset]);
+
   const onSubmit = async (data: FormValues) => {
+    if (!editData?.id) return;
+
     try {
       await mutateAsync({
-        name: data.name,
-        slug: slugify(data.name),
-        isActive: data.isActive,
+        payload: {
+          id: editData.id,
+          name: data.name,
+          slug: slugify(data.name),
+          isActive: data.isActive,
+        },
       });
 
-      toast.success("Category created successfully");
+      toast.success("Category updated successfully");
 
       reset();
       onOpenChange(false);
     } catch (error: any) {
       toast.error(
-        error?.response?.data?.message || "Failed to create category",
+        error?.response?.data?.message || "Failed to update category",
       );
     }
   };
@@ -65,7 +88,7 @@ const CategoryCreate = ({ open, onOpenChange }: CategoryCreateModalProps) => {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Create Category</DialogTitle>
+          <DialogTitle>Update Category</DialogTitle>
         </DialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -96,7 +119,7 @@ const CategoryCreate = ({ open, onOpenChange }: CategoryCreateModalProps) => {
             />
           </div>
 
-          {/* Action */}
+          {/* Actions */}
           <div className="flex justify-end gap-2 pt-2">
             <Button
               type="button"
@@ -106,7 +129,7 @@ const CategoryCreate = ({ open, onOpenChange }: CategoryCreateModalProps) => {
               Cancel
             </Button>
             <Button type="submit" disabled={isPending}>
-              {isPending ? "Creating..." : "Create"}
+              {isPending ? "Updating..." : "Update"}
             </Button>
           </div>
         </form>
@@ -115,4 +138,4 @@ const CategoryCreate = ({ open, onOpenChange }: CategoryCreateModalProps) => {
   );
 };
 
-export default CategoryCreate;
+export default CategoryUpdate;

@@ -1,15 +1,25 @@
 "use client";
-import { useCategories } from "@/api/admin-api/category/category.api";
+import {
+  CategoryInterface,
+  useCategories,
+} from "@/api/admin-api/category/category.api";
 import Header from "@/components/custom/header";
 import { SearchField } from "@/components/custom/search-field";
+import { Button } from "@/components/ui/button";
 import useSerialNumber from "@/hook/use-serial";
 import { useState } from "react";
+import CategoryCreate from "./category-create";
 import CategoryTable from "./category-table";
+import CategoryUpdate from "./category-update";
 
 const Category = () => {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+  const [editData, setEditData] = useState<CategoryInterface | null>(null);
+
   // ! category get api
   const { data, isLoading, error } = useCategories({
     page,
@@ -19,6 +29,10 @@ const Category = () => {
   // *dynamic serial with page, limit
   const serialNumber = useSerialNumber(page, limit);
 
+  const handleEdit = (category: CategoryInterface) => {
+    setEditData(category);
+    setIsUpdateModalOpen(true);
+  };
   console.log(data);
   return (
     <section className="space-y-6 w-full">
@@ -30,6 +44,9 @@ const Category = () => {
             title={"Categories"}
             description={"Manage and search all categories"}
           />
+          <Button onClick={() => setIsCreateModalOpen(true)}>
+            Create Category
+          </Button>
         </div>
       </div>
 
@@ -49,6 +66,20 @@ const Category = () => {
         categoryData={data?.data?.data}
         isLoading={isLoading}
         serialNumber={serialNumber}
+        handleEdit={handleEdit}
+      />
+
+      {/* //? Create Modal  */}
+      <CategoryCreate
+        open={isCreateModalOpen}
+        onOpenChange={setIsCreateModalOpen}
+      />
+
+      {/* //? Update Modal  */}
+      <CategoryUpdate
+        open={isUpdateModalOpen}
+        onOpenChange={setIsUpdateModalOpen}
+        editData={editData}
       />
     </section>
   );

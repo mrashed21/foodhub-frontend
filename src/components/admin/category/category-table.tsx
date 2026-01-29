@@ -1,7 +1,9 @@
 "use client";
 
+import { CategoryInterface } from "@/api/admin-api/category/category.api";
 import TableSkeleton from "@/components/custom/table-skeleton";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -15,17 +17,22 @@ interface CategoryTableProps {
   categoryData: any[];
   isLoading: boolean;
   serialNumber: (index: number) => number;
+  handleEdit: (category: CategoryInterface) => void;
 }
 
 const CategoryTable = ({
   categoryData = [],
   isLoading,
   serialNumber,
+  handleEdit,
 }: CategoryTableProps) => {
   if (isLoading) {
     return <TableSkeleton columns={6} rows={5} />;
   }
 
+  const handleDelete = (id: string) => {
+    console.log(id);
+  };
   return (
     <div className="rounded-md border">
       <Table>
@@ -34,9 +41,9 @@ const CategoryTable = ({
             <TableHead className="w-[60px]">#</TableHead>
             <TableHead>Name</TableHead>
             <TableHead>Slug</TableHead>
-            <TableHead>Status</TableHead>
             <TableHead>Created By</TableHead>
             <TableHead>Created At</TableHead>
+            <TableHead className="text-end pr-10">Actions</TableHead>
           </TableRow>
         </TableHeader>
 
@@ -54,10 +61,6 @@ const CategoryTable = ({
 
                 <TableCell className="font-medium">{category.name}</TableCell>
 
-                <TableCell className="text-muted-foreground">
-                  {category.slug}
-                </TableCell>
-
                 <TableCell>
                   {category.isActive ? (
                     <Badge>Active</Badge>
@@ -70,6 +73,22 @@ const CategoryTable = ({
 
                 <TableCell>
                   {new Date(category.createdAt).toLocaleDateString()}
+                </TableCell>
+                <TableCell className="text-center flex gap-2 justify-end">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleEdit(category)}
+                  >
+                    Edit
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleDelete(category.id)}
+                  >
+                    Delete
+                  </Button>
                 </TableCell>
               </TableRow>
             ))
