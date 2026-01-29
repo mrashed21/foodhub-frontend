@@ -62,7 +62,7 @@ const CategoryTable = ({
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[60px]">#</TableHead>
+              <TableHead className="w-[60px] pl-5">S.N</TableHead>
               <TableHead>Name</TableHead>
               <TableHead>Status</TableHead>
               <TableHead>Created By</TableHead>
@@ -81,7 +81,7 @@ const CategoryTable = ({
             ) : (
               categoryData.map((category, index) => (
                 <TableRow key={category.id}>
-                  <TableCell>{serialNumber(index)}</TableCell>
+                  <TableCell className="pl-5">{serialNumber(index)}</TableCell>
                   <TableCell className="font-medium capitalize">
                     {category.name}
                   </TableCell>

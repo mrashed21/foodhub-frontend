@@ -21,7 +21,7 @@ import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
 
-/* ---------------- Schema ---------------- */
+//! Schema
 
 import { BDPhoneInput, validatePhoneNumber } from "bd-number-validator";
 
@@ -57,7 +57,7 @@ const registerSchema = z
 
 type RegisterFormValues = z.infer<typeof registerSchema>;
 
-/* ---------------- Component ---------------- */
+//! Component
 
 const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -68,6 +68,7 @@ const Register = () => {
     handleSubmit,
     watch,
     setValue,
+    setError,
     control,
     formState: { errors, isSubmitting },
   } = useForm<RegisterFormValues>({
@@ -82,7 +83,7 @@ const Register = () => {
   const emailValue = watch("email");
   const isEmailValid = !!emailValue && !errors.email;
 
-  /* ---------------- Submit ---------------- */
+  //! Submit
 
   const onSubmit = async (data: RegisterFormValues) => {
     try {
@@ -93,18 +94,34 @@ const Register = () => {
         body: JSON.stringify(data),
       });
 
+      const result = await res.json();
+
       if (!res.ok) {
-        toast.error("Something went wrong! Try again");
+        if (result?.errors) {
+          Object.entries(result.errors).forEach(([field, message]) => {
+            setError(field as keyof RegisterFormValues, {
+              type: "server",
+              message: String(message),
+            });
+          });
+        }
+
+        if (result?.message) {
+          toast.error(result.message);
+        } else {
+          toast.error("Registration failed");
+        }
+
         return;
       }
 
       toast.success("Registered successfully! Please verify your email.");
     } catch {
-      toast.error("Something went wrong");
+      toast.error("Server error. Please try again.");
     }
   };
 
-  /* ---------------- Resend Email ---------------- */
+  //! Resend Email
 
   const resendVerification = async (email: string) => {
     if (!email) return;
@@ -140,8 +157,6 @@ const Register = () => {
       toast.error("Something went wrong");
     }
   };
-
-  /* ---------------- UI ---------------- */
 
   return (
     <section className="min-h-screen flex items-center justify-center bg-muted/40">
