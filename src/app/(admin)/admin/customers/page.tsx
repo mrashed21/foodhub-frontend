@@ -1,9 +1,11 @@
+import Customer from "@/components/admin/customer/customer";
+export const metadata = {
+  title: "Customers",
+};
 const CustomersPage = () => {
   return (
     <section className="flex-1 p-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Customers</h1>
-      </div>
+      <Customer />
     </section>
   );
 };

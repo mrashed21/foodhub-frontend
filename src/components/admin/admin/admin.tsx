@@ -21,7 +21,7 @@ const Admin = () => {
     <section>
       {/* //? Header  */}
       <div className="w-full max-w-full overflow-hidden">
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mt-5">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           {/* //? Header */}
           <Header
             title={"Admins"}

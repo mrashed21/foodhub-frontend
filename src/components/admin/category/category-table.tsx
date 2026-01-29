@@ -16,6 +16,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { formatDate } from "@/hook/date-format";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -96,9 +97,7 @@ const CategoryTable = ({
 
                   <TableCell>{category?.user?.name}</TableCell>
 
-                  <TableCell>
-                    {new Date(category.createdAt).toLocaleDateString()}
-                  </TableCell>
+                  <TableCell>{formatDate(category.createdAt)}</TableCell>
 
                   <TableCell className="flex gap-2 justify-end">
                     <Button

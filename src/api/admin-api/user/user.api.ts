@@ -63,9 +63,7 @@ const updateUserApi = async ({
 }: {
   payload: {
     id: string;
-    name: string;
-    slug: string;
-    isActive: boolean;
+    status: string;
   };
 }) => {
   const { data } = await api.patch("/user", payload);
