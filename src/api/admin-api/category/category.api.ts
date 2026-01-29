@@ -9,7 +9,7 @@ export interface CategoryInterface {
   slug: string;
   isActive: boolean;
   createdAt: string;
-  published_by: {
+  user: {
     id: string;
     name: string;
   };
@@ -72,7 +72,6 @@ export const useCreateCategory = () => {
   });
 };
 
-
 // todo UPDATE Category
 const updateCategoryApi = async ({
   payload,
@@ -102,7 +101,7 @@ export const useUpdateCategory = () => {
 
 //! DELETE Category
 const deleteCategoryApi = async (id: string) => {
-  const { data } = await api.delete(`/category/${id}`);
+  const { data } = await api.delete(`/category`, { data: { id } });
   return data;
 };
 

@@ -33,7 +33,6 @@ const Category = () => {
     setEditData(category);
     setIsUpdateModalOpen(true);
   };
-  console.log(data);
   return (
     <section className="space-y-6 w-full">
       {/* //? Header  */}
