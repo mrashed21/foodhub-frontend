@@ -42,13 +42,13 @@ const registerSchema = z
       .min(1, "Password is required")
       .min(8, "Password must be at least 8 characters long"),
 
-    role: z.enum(["user", "provider"]),
-    provider_name: z.string().optional(),
+    role: z.enum(["customer", "provider"]),
+    providerName: z.string().optional(),
   })
   .superRefine((data, ctx) => {
-    if (data.role === "provider" && !data.provider_name?.trim()) {
+    if (data.role === "provider" && !data.providerName?.trim()) {
       ctx.addIssue({
-        path: ["provider_name"],
+        path: ["providerName"],
         message: "Provider name is required",
         code: z.ZodIssueCode.custom,
       });
@@ -74,7 +74,7 @@ const Register = () => {
   } = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
-      role: "user",
+      role: "customer",
       phone: "",
     },
   });
@@ -242,16 +242,16 @@ const Register = () => {
           <div className="space-y-1">
             <Label>Role</Label>
             <Select
-              defaultValue="user"
+              defaultValue="customer"
               onValueChange={(value) =>
-                setValue("role", value as "user" | "provider")
+                setValue("role", value as "customer" | "provider")
               }
             >
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="Select role" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="user">User</SelectItem>
+                <SelectItem value="customer">Customer</SelectItem>
                 <SelectItem value="provider">Provider</SelectItem>
               </SelectContent>
             </Select>
@@ -263,11 +263,11 @@ const Register = () => {
               <Label>Vendor / Restaurant Name</Label>
               <Input
                 placeholder="Restaurant / Business name"
-                {...register("provider_name")}
+                {...register("providerName")}
               />
-              {errors.provider_name && (
+              {errors.providerName && (
                 <p className="text-sm text-destructive">
-                  {errors.provider_name.message}
+                  {errors.providerName.message}
                 </p>
               )}
             </div>

@@ -6,7 +6,7 @@ export interface User {
   image: string | null;
   phone: string;
   role: "customer" | "provider" | "admin";
-  provider_name?: string;
+  providerName?: string;
   status: "active" | "inactive";
   createdAt: Date;
   updatedAt: Date;

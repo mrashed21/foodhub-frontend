@@ -79,7 +79,7 @@ const Login = () => {
           <Label>Email</Label>
           <Input
             type="email"
-            placeholder="john@example.com"
+            placeholder="rashedjaman768@gmail.com"
             {...register("email")}
           />
           {errors.email && (
@@ -94,6 +94,7 @@ const Login = () => {
           <div className="relative">
             <Input
               type={showPassword ? "text" : "password"}
+              placeholder="********"
               {...register("password")}
             />
             <button
@@ -119,6 +120,7 @@ const Login = () => {
       <p className="mt-4 text-center text-sm">
         Don&apos;t have an account?
         <Link href="/auth/register" className="font-medium underline">
+          {" "}
           Register
         </Link>
       </p>

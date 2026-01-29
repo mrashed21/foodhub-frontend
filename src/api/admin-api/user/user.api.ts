@@ -11,7 +11,7 @@ export interface UserInterface {
   role: string;
   email: string;
   phone: string;
-  provider_name?: string;
+  providerName?: string;
   status: string;
 }
 

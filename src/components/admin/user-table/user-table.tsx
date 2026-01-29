@@ -119,7 +119,7 @@ const UserTable = ({
 
                 {hasProvider && (
                   <TableCell>
-                    {user.role === "provider" ? user.provider_name || "-" : "-"}
+                    {user.role === "provider" ? user.providerName || "-" : "-"}
                   </TableCell>
                 )}
 

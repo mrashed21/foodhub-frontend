@@ -15,6 +15,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 import { authClient } from "@/lib/auth-client";
 import { SessionUser, User } from "@/types/user-types";
+import { useRouter } from "next/navigation";
 
 const navItems = [
   { label: "Home", href: "/" },
@@ -36,6 +37,8 @@ const getDashboardRoute = (role: User["role"]) => {
 };
 
 const Navbar = () => {
+  const router = useRouter();
+
   const { data } = authClient.useSession();
   const user: SessionUser | null = data?.user ?? null;
 
@@ -137,7 +140,10 @@ const Navbar = () => {
                   <Button
                     variant="destructive"
                     className="w-full"
-                    onClick={() => authClient.signOut()}
+                    onClick={async () => {
+                      await authClient.signOut();
+                      router.replace("/");
+                    }}
                   >
                     Logout
                   </Button>
