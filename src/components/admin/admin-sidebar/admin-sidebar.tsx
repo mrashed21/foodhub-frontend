@@ -6,7 +6,6 @@ import {
   ShoppingBag,
   Tags,
   Users,
-  Utensils,
   UtensilsCrossed,
 } from "lucide-react";
 import Link from "next/link";
@@ -120,19 +119,6 @@ const AdminSidebar = () => {
           Categories
         </Link>
 
-        {/* //! Cuisines */}
-        <Link
-          href="/admin/cuisines"
-          className={cn(
-            "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition",
-            isNested("/admin/cuisines")
-              ? "bg-primary text-primary-foreground"
-              : "text-muted-foreground hover:bg-muted",
-          )}
-        >
-          <Utensils className="h-4 w-4" />
-          Cuisines
-        </Link>
         {/* //! all meals */}
         <Link
           href="/admin/all-meals"

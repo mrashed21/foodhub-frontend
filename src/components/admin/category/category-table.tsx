@@ -82,7 +82,9 @@ const CategoryTable = ({
               categoryData.map((category, index) => (
                 <TableRow key={category.id}>
                   <TableCell>{serialNumber(index)}</TableCell>
-                  <TableCell className="font-medium">{category.name}</TableCell>
+                  <TableCell className="font-medium capitalize">
+                    {category.name}
+                  </TableCell>
 
                   <TableCell>
                     {category.isActive ? (
