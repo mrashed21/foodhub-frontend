@@ -33,7 +33,7 @@ export interface MenuInterface {
 
 //! GET MENUS (Pagination + Search)
 
-interface GetMenusParams {
+export interface GetMenusParams {
   page?: number;
   limit?: number;
   search?: string;
@@ -88,5 +88,20 @@ export const useMenus = (params: GetMenusParams = {}) => {
   return useQuery({
     queryKey: ["menu", params],
     queryFn: () => getMenusApi(params),
+  });
+};
+
+// ! get menu by id
+
+const getMenuByIdApi = async (id: string): Promise<{ data: MenuInterface }> => {
+  console.log("id", id);
+  const { data } = await api.get(`/menu/${id}`);
+  return data;
+};
+
+export const useMenuById = (id: string) => {
+  return useQuery({
+    queryKey: ["menu", id],
+    queryFn: () => getMenuByIdApi(id),
   });
 };

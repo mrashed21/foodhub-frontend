@@ -1,13 +1,13 @@
 "use client";
 
+import { useMenusAdmin } from "@/api/admin-api/menu.api";
 import { usePublicCategories } from "@/api/public-api/category.api";
-import { useMenus } from "@/api/public-api/menu.api";
 import CustomSelect, { SelectOption } from "@/components/custom/custom-select";
 import Header from "@/components/custom/header";
 import { SearchField } from "@/components/custom/search-field";
+import useSerialNumber from "@/hook/use-serial";
 import { useState } from "react";
 import AllMealsTable from "./all-meals-table";
-import useSerialNumber from "@/hook/use-serial";
 
 //! Types
 interface Option extends SelectOption {}
@@ -36,12 +36,12 @@ const AllMeals = () => {
       value: c.id,
     })) || [];
 
-    // *dynamic serial with page, limit
+  // *dynamic serial with page, limit
   const serialNumber = useSerialNumber(page, limit);
 
   //! Fetch Menus
 
-  const { data, isLoading } = useMenus({
+  const { data, isLoading } = useMenusAdmin({
     page,
     limit,
     search,
@@ -97,7 +97,11 @@ const AllMeals = () => {
       </div>
 
       {/* Table */}
-      <AllMealsTable data={meals} isLoading={isLoading} serialNumber={serialNumber} />
+      <AllMealsTable
+        data={meals}
+        isLoading={isLoading}
+        serialNumber={serialNumber}
+      />
     </section>
   );
 };

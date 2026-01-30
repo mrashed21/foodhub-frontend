@@ -1,7 +1,7 @@
 "use client";
 import {
   CategoryInterface,
-  useCategories,
+  useCategoriesAdmin,
 } from "@/api/admin-api/category/category.api";
 import Header from "@/components/custom/header";
 import { SearchField } from "@/components/custom/search-field";
@@ -21,7 +21,7 @@ const Category = () => {
   const [editData, setEditData] = useState<CategoryInterface | null>(null);
 
   // ! category get api
-  const { data, isLoading, error } = useCategories({
+  const { data, isLoading, error } = useCategoriesAdmin({
     page,
     limit,
     search,

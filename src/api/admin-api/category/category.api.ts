@@ -50,6 +50,35 @@ export const useCategories = ({
   });
 };
 
+//* GET Category (pagination + search) admin
+const getCategoriesAdminApi = async ({
+  page = 1,
+  limit = 10,
+  search,
+}: GetCategoriesParams) => {
+  const params: any = { page, limit };
+
+  if (search?.trim()) {
+    params.search = search;
+  }
+
+  const { data } = await api.get("/category/admin", { params });
+  return data;
+};
+
+//* GET Categories hook
+export const useCategoriesAdmin = ({
+  page = 1,
+  limit = 10,
+  search,
+}: GetCategoriesParams) => {
+  return useQuery({
+    queryKey: ["categories/admin", page, limit, search],
+    queryFn: () => getCategoriesAdminApi({ page, limit, search }),
+    // keepPreviousData: true,
+  });
+};
+
 //? CREATE Category
 const createCategoryApi = async (payload: {
   name: string;

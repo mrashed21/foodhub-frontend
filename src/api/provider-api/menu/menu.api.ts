@@ -1,43 +1,6 @@
 import api from "@/api/axios";
+import { GetMenusParams, MenuInterface } from "@/api/public-api/menu.api";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-
-//! MENU TYPES (MATCHES PRISMA)
-
-export interface MenuInterface {
-  id: string;
-
-  providerId: string;
-  provider?: {
-    id: string;
-    name: string;
-  };
-
-  name: string;
-  description: string;
-  price: number;
-  image?: string | null;
-
-  categoryId: string;
-  category?: {
-    id: string;
-    name: string;
-  };
-
-  cuisine: string[];
-
-  isAvailable: boolean;
-
-  createdAt: string;
-  updatedAt: string;
-}
-
-//! GET MENUS (Pagination + Search)
-
-interface GetMenusParams {
-  page?: number;
-  limit?: number;
-  search?: string;
-}
 
 interface PaginatedMenusResponse {
   data: {
