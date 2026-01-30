@@ -116,6 +116,7 @@ const MenuCreate = ({
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           {/* Name */}
           <div>
+            <label className="block text-sm font-medium mb-1">Menu Name</label>
             <Input
               placeholder="Menu name"
               {...register("name", { required: "Name is required" })}
@@ -129,6 +130,9 @@ const MenuCreate = ({
 
           {/* Description */}
           <div>
+            <label className="block text-sm font-medium mb-1">
+              Description
+            </label>
             <Textarea
               placeholder="Description"
               {...register("description", {
@@ -142,8 +146,9 @@ const MenuCreate = ({
             )}
           </div>
 
-          {/* Price (text but numeric) */}
+          {/* Price */}
           <div>
+            <label className="block text-sm font-medium mb-1">Price</label>
             <Input
               type="text"
               inputMode="decimal"
@@ -166,13 +171,13 @@ const MenuCreate = ({
 
           {/* Category */}
           <div>
+            <label className="block text-sm font-medium mb-1">Category</label>
             <Controller
               name="category"
               control={control}
               rules={{ required: "Category is required" }}
               render={({ field }) => (
                 <CustomSelect<CategoryOption>
-                  name="Category"
                   placeholder="Select category"
                   options={categoryOptions}
                   value={field.value}
@@ -191,14 +196,19 @@ const MenuCreate = ({
           </div>
 
           {/* Cuisine */}
-          <Input
-            placeholder="Cuisine (comma separated)"
-            {...register("cuisine")}
-          />
+          <div>
+            <label className="block text-sm font-medium mb-1">
+              Cuisine{" "}
+              <span className="text-xs text-muted-foreground">
+                (comma separated)
+              </span>
+            </label>
+            <Input placeholder="e.g. Chinese, Thai" {...register("cuisine")} />
+          </div>
 
-          {/* Availability (Switch) */}
+          {/* Availability */}
           <div className="flex items-center justify-between">
-            <span className="text-sm font-medium">Available</span>
+            <label className="text-sm font-medium">Available</label>
             <Controller
               name="isAvailable"
               control={control}

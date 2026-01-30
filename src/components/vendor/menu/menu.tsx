@@ -7,6 +7,7 @@ import useSerialNumber from "@/hook/use-serial";
 import { useState } from "react";
 import MenuCreate from "./menu-create";
 import MenuTable from "./menu-table";
+import MenuUpdate from "./menu-update";
 
 const Menu = () => {
   const [page, setPage] = useState(1);
@@ -64,11 +65,11 @@ const Menu = () => {
       />
 
       {/* update modal */}
-      {/* <MenuUpdate
+      <MenuUpdate
         open={isUpdateModalOpen}
         onOpenChange={setIsUpdateModalOpen}
         editData={editData}
-      /> */}
+      />
     </section>
   );
 };

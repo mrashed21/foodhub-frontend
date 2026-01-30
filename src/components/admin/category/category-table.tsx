@@ -39,7 +39,7 @@ const CategoryTable = ({
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
   if (isLoading) {
-    return <TableSkeleton columns={6} rows={5} />;
+    return <TableSkeleton columns={10} rows={10} />;
   }
 
   const handleConfirmDelete = async () => {
@@ -125,7 +125,7 @@ const CategoryTable = ({
         </Table>
       </div>
 
-      {/* 🔥 Confirmation Modal */}
+      {/*  Confirmation Modal */}
       <ConfirmDialog
         open={open}
         onOpenChange={setOpen}

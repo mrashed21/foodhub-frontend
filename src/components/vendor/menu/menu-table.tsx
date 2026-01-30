@@ -1,6 +1,7 @@
 "use client";
 
-import { MenuInterface } from "@/api/provider-api/menu/menu.api";
+import { MenuInterface, useDeleteMenu } from "@/api/provider-api/menu/menu.api";
+import ConfirmDialog from "@/components/custom/confirm-dialog";
 import TableSkeleton from "@/components/custom/table-skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -13,6 +14,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Edit, Trash2 } from "lucide-react";
+import { useState } from "react";
 import { toast } from "sonner";
 
 interface MenuTableProps {
@@ -28,6 +30,24 @@ const MenuTable = ({
   serialNumber,
   handleEdit,
 }: MenuTableProps) => {
+  const { mutateAsync: deleteMenu, isPending } = useDeleteMenu();
+
+  const [open, setOpen] = useState(false);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+
+  const handleConfirmDelete = async () => {
+    if (!selectedId) return;
+
+    try {
+      await deleteMenu(selectedId);
+      toast.success("Menu deleted successfully");
+      setOpen(false);
+      setSelectedId(null);
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message || "Failed to delete menu");
+    }
+  };
+
   if (isLoading) {
     return <TableSkeleton columns={10} rows={10} />;
   }
@@ -42,7 +62,7 @@ const MenuTable = ({
 
   return (
     <div className="w-full overflow-x-auto rounded-md border">
-      <Table className="min-w-100 table-fixed">
+      <Table className="min-w-300 table-fixed">
         <TableHeader>
           <TableRow>
             <TableHead className="w-12 pl-5">S.N</TableHead>
@@ -111,7 +131,10 @@ const MenuTable = ({
                 <Button
                   size="icon"
                   variant="destructive"
-                  onClick={() => toast.info("Delete handler will be added")}
+                  onClick={() => {
+                    setSelectedId(menu.id);
+                    setOpen(true);
+                  }}
                 >
                   <Trash2 className="h-4 w-4" />
                 </Button>
@@ -120,6 +143,17 @@ const MenuTable = ({
           ))}
         </TableBody>
       </Table>
+
+      {/*  Confirmation Modal */}
+      <ConfirmDialog
+        open={open}
+        onOpenChange={setOpen}
+        title="Delete Menu?"
+        description="This Menu will be permanently deleted."
+        confirmText="Delete"
+        loading={isPending}
+        onConfirm={handleConfirmDelete}
+      />
     </div>
   );
 };
