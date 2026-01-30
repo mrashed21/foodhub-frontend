@@ -94,7 +94,6 @@ export const useMenus = (params: GetMenusParams = {}) => {
 // ! get menu by id
 
 const getMenuByIdApi = async (id: string): Promise<{ data: MenuInterface }> => {
-  console.log("id", id);
   const { data } = await api.get(`/menu/${id}`);
   return data;
 };

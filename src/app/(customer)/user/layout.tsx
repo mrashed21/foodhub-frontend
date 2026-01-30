@@ -1,7 +1,7 @@
 "use client";
 
 import DashboardHeader from "@/common/dashboard-header/dashboad-header";
-import CustomerSidebar from "@/components/admin/customer/customer-sidebar/customer-sidebar";
+import CustomerSidebar from "@/components/customer/customer-sidebar/customer-sidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
 
 const CustomerLayout = ({ children }: { children: React.ReactNode }) => {

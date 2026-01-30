@@ -4,16 +4,17 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import {
-    Sidebar,
-    SidebarContent,
-    SidebarHeader,
+  Sidebar,
+  SidebarContent,
+  SidebarHeader,
+  useSidebar,
 } from "@/components/ui/sidebar";
 
 import {
-    Tooltip,
-    TooltipContent,
-    TooltipProvider,
-    TooltipTrigger,
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
 } from "@/components/ui/tooltip";
 
 import { cn } from "@/lib/utils";
@@ -24,12 +25,20 @@ const isRouteActive = (pathname: string, url: string) =>
 
 const CustomerSidebar = () => {
   const pathname = usePathname();
+  const { state, setOpen } = useSidebar();
 
+  const isCollapsed = state === "collapsed";
   return (
     <Sidebar collapsible="icon" className="transition-all duration-300">
       {/* HEADER */}
-      <SidebarHeader className="px-1 py-3 font-semibold text-lg lg:flex justify-center hidden ">
-        <span>My Account</span>
+      <SidebarHeader className="px-1 py-3 font-semibold text-lg flex justify-center">
+        {isCollapsed ? (
+          <span className="w-10 h-10 flex items-center justify-center rounded-full bg-accent-foreground text-white">
+            MA
+          </span>
+        ) : (
+          <span>My Accounts</span>
+        )}
       </SidebarHeader>
 
       {/* CONTENT */}

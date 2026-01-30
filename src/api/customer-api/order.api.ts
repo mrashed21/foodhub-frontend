@@ -2,10 +2,6 @@ import api from "@/api/axios";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { GetPaginationParams } from "../admin-api/category/category.api";
 
-/* =========================
-   TYPES
-========================= */
-
 export type OrderStatus =
   | "placed"
   | "preparing"
@@ -59,10 +55,6 @@ export interface OrderInterface {
   orderItems: OrderItemInterface[];
 }
 
-/* =========================
-   CREATE ORDER
-========================= */
-
 export interface CreateOrderPayload {
   phone: string;
   address: string;
@@ -73,11 +65,7 @@ export interface CreateOrderPayload {
     price: number;
   }[];
 }
-
-/**
- * Backend returns: OrderInterface[]
- * (because multi-vendor = multiple orders)
- */
+//! CREATE ORDER api
 const createOrderApi = async (
   payload: CreateOrderPayload,
 ): Promise<OrderInterface[]> => {
@@ -85,6 +73,7 @@ const createOrderApi = async (
   return data.data;
 };
 
+//! CREATE ORDER  hook
 export const useCreateOrder = () => {
   const queryClient = useQueryClient();
 
@@ -96,9 +85,7 @@ export const useCreateOrder = () => {
   });
 };
 
-/* =========================
-   CUSTOMER – MY ORDERS
-========================= */
+//! get CUSTOMER – MY ORDERS
 
 const getMyOrdersApi = async ({
   page = 1,
@@ -114,6 +101,7 @@ const getMyOrdersApi = async ({
   const { data } = await api.get("/order", { params });
   return data;
 };
+//!get CUSTOMER – MY ORDERS
 
 export const useMyOrders = ({
   page = 1,
@@ -123,6 +111,21 @@ export const useMyOrders = ({
   return useQuery({
     queryKey: ["my-orders", page, limit, search],
     queryFn: () => getMyOrdersApi({ page, limit, search }),
+  });
+};
+
+// !order details
+const getOrdersDetailsApi = async (id: string) => {
+  const { data } = await api.get(`/order/${id}`);
+  return data;
+};
+
+//!order details
+
+export const useOrdersDetails = (id: string) => {
+  return useQuery({
+    queryKey: ["my-orders"],
+    queryFn: () => getOrdersDetailsApi(id),
   });
 };
 
