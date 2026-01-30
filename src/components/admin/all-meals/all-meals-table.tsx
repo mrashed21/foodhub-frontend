@@ -4,12 +4,12 @@ import { MenuInterface } from "@/api/public-api/menu.api";
 import TableSkeleton from "@/components/custom/table-skeleton";
 import { Badge } from "@/components/ui/badge";
 import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@/components/ui/table";
 
 interface AllMealsTableProps {
@@ -40,7 +40,7 @@ const AllMealsTable = ({
       <Table className="min-w-150 table-fixed">
         <TableHeader>
           <TableRow>
-            <TableHead className="w-[60px] pl-5">S.N</TableHead>
+            <TableHead className="w-15 pl-5">S.N</TableHead>
             <TableHead>Name</TableHead>
             <TableHead>Category</TableHead>
             <TableHead>Price</TableHead>
@@ -52,7 +52,7 @@ const AllMealsTable = ({
 
         <TableBody>
           {data.map((menu, index) => (
-            <TableRow key={menu.id }>
+            <TableRow key={menu.id}>
               <TableCell className="pl-5">{serialNumber(index)}</TableCell>
 
               <TableCell className="pl-5">{menu.name}</TableCell>

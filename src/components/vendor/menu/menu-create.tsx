@@ -57,10 +57,9 @@ const MenuCreate = ({
     },
   });
 
-  
   //! create menu
   const { mutateAsync, isPending } = useCreateMenu();
-  
+
   //! fetch categories
   const { data: categories, isLoading } = usePublicCategories();
 
@@ -71,7 +70,6 @@ const MenuCreate = ({
       value: item.id,
     })) || [];
 
-    
   //! Submit
 
   const onSubmit = async (values: MenuCreateFormValues) => {

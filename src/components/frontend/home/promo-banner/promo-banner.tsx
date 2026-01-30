@@ -1,5 +1,6 @@
 import Container from "@/common/container/container";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 const PromoBanner = () => {
   return (
@@ -9,9 +10,11 @@ const PromoBanner = () => {
           <h2 className="text-3xl font-bold">Own a Restaurant?</h2>
           <p className="mt-3">Join FoodHub and grow your business</p>
 
-          <Button variant="secondary" className="mt-6">
-            Become a Provider
-          </Button>
+          <Link href={"/auth/register"}>
+            <Button variant="secondary" className="mt-6">
+              Become a Provider
+            </Button>
+          </Link>
         </div>
       </Container>
     </section>

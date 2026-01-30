@@ -1,10 +1,10 @@
 "use client";
 import { useUsers } from "@/api/admin-api/user/user.api";
+import Header from "@/components/custom/header";
 import { SearchField } from "@/components/custom/search-field";
 import useSerialNumber from "@/hook/use-serial";
 import { useState } from "react";
 import UserTable from "../user-table/user-table";
-import Header from "@/components/custom/header";
 
 const Customer = () => {
   const [page, setPage] = useState(1);
@@ -24,7 +24,7 @@ const Customer = () => {
 
   return (
     <section>
-       {/* //? Header  */}
+      {/* //? Header  */}
       <div className="w-full max-w-full overflow-hidden">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           {/* //? Header */}

@@ -8,39 +8,34 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
-const CART_KEY = "foodhub_cart";
-
-const getCart = (): MenuInterface[] => {
-  if (typeof window === "undefined") return [];
-  return JSON.parse(localStorage.getItem(CART_KEY) || "[]");
-};
-
-const setCart = (items: MenuInterface[]) => {
-  localStorage.setItem(CART_KEY, JSON.stringify(items));
-  window.dispatchEvent(new Event("cart-updated"));
-};
+import {
+  addToCart,
+  CART_UPDATED_EVENT,
+  isInCart,
+  removeFromCart,
+} from "@/lib/cart";
 
 const MealCard = ({ meal }: { meal: MenuInterface }) => {
   const [inCart, setInCart] = useState(false);
 
   useEffect(() => {
-    const cart = getCart();
-    setInCart(cart.some((item) => item.id === meal.id));
+    setInCart(isInCart(meal.id));
+
+    const sync = () => setInCart(isInCart(meal.id));
+    window.addEventListener(CART_UPDATED_EVENT, sync);
+
+    return () => {
+      window.removeEventListener(CART_UPDATED_EVENT, sync);
+    };
   }, [meal.id]);
 
-  const handleAddToCart = () => {
-    const cart = getCart();
-    if (cart.some((item) => item.id === meal.id)) return;
-
-    setCart([...cart, meal]);
-    setInCart(true);
+  const handleAdd = () => {
+    addToCart(meal);
     toast.success("Added to cart 🛒");
   };
 
-  const handleRemoveFromCart = () => {
-    const cart = getCart().filter((item) => item.id !== meal.id);
-    setCart(cart);
-    setInCart(false);
+  const handleRemove = () => {
+    removeFromCart(meal.id);
     toast.info("Removed from cart");
   };
 
@@ -80,15 +75,11 @@ const MealCard = ({ meal }: { meal: MenuInterface }) => {
             </Link>
 
             {inCart ? (
-              <Button
-                size="sm"
-                variant="destructive"
-                onClick={handleRemoveFromCart}
-              >
+              <Button size="sm" variant="destructive" onClick={handleRemove}>
                 <Trash2 className="h-4 w-4" />
               </Button>
             ) : (
-              <Button size="sm" onClick={handleAddToCart}>
+              <Button size="sm" onClick={handleAdd}>
                 <ShoppingCart className="h-4 w-4 mr-1" />
                 Add
               </Button>

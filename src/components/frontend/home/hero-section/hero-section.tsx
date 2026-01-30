@@ -1,5 +1,6 @@
 import Container from "@/common/container/container";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 const HeroSection = () => {
   return (
@@ -15,10 +16,15 @@ const HeroSection = () => {
           </p>
 
           <div className="mt-8 flex justify-center gap-4">
-            <Button size="lg">Browse Meals</Button>
-            <Button size="lg" variant="outline">
-              Become a Provider
-            </Button>
+            <Link href="/meals">
+              {" "}
+              <Button size="lg">Browse Meals</Button>
+            </Link>
+            <Link href={"/auth/register"}>
+              <Button size="lg" variant="outline">
+                Become a Provider
+              </Button>
+            </Link>
           </div>
         </div>
       </Container>

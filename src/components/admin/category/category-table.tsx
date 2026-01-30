@@ -63,7 +63,7 @@ const CategoryTable = ({
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[60px] pl-5">S.N</TableHead>
+              <TableHead className="w-15 pl-5">S.N</TableHead>
               <TableHead>Name</TableHead>
               <TableHead>Status</TableHead>
               <TableHead>Created By</TableHead>

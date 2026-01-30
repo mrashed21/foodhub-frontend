@@ -8,6 +8,8 @@ const ROLE_BASE_ROUTE: Record<string, string> = {
   [Roles.admin]: "/admin",
 };
 
+const AUTH_ONLY_ROUTES = ["/checkout"];
+
 const isRouteAllowedForRole = (role: string, pathname: string): boolean => {
   const baseRoute = ROLE_BASE_ROUTE[role];
   if (!baseRoute) return false;
@@ -23,15 +25,21 @@ export async function proxy(request: NextRequest) {
 
   const { data, error } = await userService.getSession();
 
+  // ❌ not logged in → login
   if (error || !data?.user) {
     return NextResponse.redirect(new URL("/auth/login", origin));
   }
 
   role = data.user.role;
 
+  // ✅ NEW: auth-only routes (checkout)
+  if (AUTH_ONLY_ROUTES.some((route) => pathname.startsWith(route))) {
+    return NextResponse.next();
+  }
+
+  // 🔒 role-based protection (existing logic)
   if (!isRouteAllowedForRole(role!, pathname)) {
     const redirectPath = ROLE_BASE_ROUTE[role!] ?? "/auth/login";
-
     return NextResponse.redirect(new URL(redirectPath, origin));
   }
 
@@ -40,6 +48,7 @@ export async function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
+    "/checkout",
     "/user",
     "/user/:path*",
     "/vendor",

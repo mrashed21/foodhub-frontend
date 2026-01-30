@@ -15,7 +15,7 @@ export interface CategoryInterface {
   };
 }
 
-interface GetCategoriesParams {
+export interface GetPaginationParams {
   page?: number;
   limit?: number;
   search?: string;
@@ -26,7 +26,7 @@ const getCategoriesApi = async ({
   page = 1,
   limit = 10,
   search,
-}: GetCategoriesParams) => {
+}: GetPaginationParams) => {
   const params: any = { page, limit };
 
   if (search?.trim()) {
@@ -42,7 +42,7 @@ export const useCategories = ({
   page = 1,
   limit = 10,
   search,
-}: GetCategoriesParams) => {
+}: GetPaginationParams) => {
   return useQuery({
     queryKey: ["categories", page, limit, search],
     queryFn: () => getCategoriesApi({ page, limit, search }),
@@ -55,7 +55,7 @@ const getCategoriesAdminApi = async ({
   page = 1,
   limit = 10,
   search,
-}: GetCategoriesParams) => {
+}: GetPaginationParams) => {
   const params: any = { page, limit };
 
   if (search?.trim()) {
@@ -71,7 +71,7 @@ export const useCategoriesAdmin = ({
   page = 1,
   limit = 10,
   search,
-}: GetCategoriesParams) => {
+}: GetPaginationParams) => {
   return useQuery({
     queryKey: ["categories/admin", page, limit, search],
     queryFn: () => getCategoriesAdminApi({ page, limit, search }),

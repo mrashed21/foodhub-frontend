@@ -7,7 +7,7 @@ export interface MenuInterface {
   id: string;
 
   providerId: string;
-  provider?: {
+  provider: {
     id: string;
     name: string;
   };

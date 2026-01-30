@@ -1,7 +1,6 @@
 "use client";
 
 import { usePublicCategories } from "@/api/public-api/category.api";
-import Container from "@/common/container/container";
 import { SelectOption } from "@/components/custom/custom-select";
 import MealsFilters from "@/components/frontend/meals/meals-filters";
 import MealsGrid from "@/components/frontend/meals/meals-grid";
