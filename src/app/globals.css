@@ -127,3 +127,12 @@
   --font-sans: var(--font-poppins);
   --font-mono: var(--font-poppins);
 }
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}

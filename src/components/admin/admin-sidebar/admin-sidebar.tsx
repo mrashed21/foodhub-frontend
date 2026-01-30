@@ -1,163 +1,163 @@
 "use client";
 
-import {
-  ChevronDown,
-  LayoutDashboard,
-  ShoppingBag,
-  Tags,
-  Users,
-  UtensilsCrossed,
-} from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarHeader,
+  useSidebar,
+} from "@/components/ui/sidebar";
+
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 import { cn } from "@/lib/utils";
+import { adminSidebarMenu } from "./admin-sidebar-data";
 
-const USER_ROUTES = ["/admin/customers", "/admin/providers", "/admin/admins"];
+const isRouteActive = (pathname: string, item: any) => {
+  if (item.url) {
+    return pathname === item.url || pathname.startsWith(item.url + "/");
+  }
+
+  if (item.items?.length) {
+    return item.items.some(
+      (sub: any) => pathname === sub.url || pathname.startsWith(sub.url + "/"),
+    );
+  }
+
+  return false;
+};
 
 const AdminSidebar = () => {
   const pathname = usePathname();
+  const { state, setOpen } = useSidebar();
 
-  //! Active helpers
-  const isExact = (href: string) => pathname === href;
-  const isNested = (href: string) =>
-    pathname === href || pathname.startsWith(`${href}/`);
-
-  const isUsersActive = USER_ROUTES.some(
-    (route) => pathname === route || pathname.startsWith(`${route}/`),
-  );
-
-  const [usersOpen, setUsersOpen] = useState(isUsersActive);
+  const isCollapsed = state === "collapsed";
 
   return (
-    <aside className="w-64 border-r bg-background sticky top-[70px] h-[calc(100vh-70px)] overflow-y-auto">
-      <div className="p-6 text-xl font-bold text-primary">Admin Panel</div>
-
-      <nav className="px-4 space-y-1">
-        {/* //! Dashboard */}
-        <Link
-          href="/admin"
-          className={cn(
-            "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition",
-            isExact("/admin")
-              ? "bg-primary text-primary-foreground"
-              : "text-muted-foreground hover:bg-muted",
-          )}
-        >
-          <LayoutDashboard className="h-4 w-4" />
-          Dashboard
-        </Link>
-
-        {/* //! Users Dropdown */}
-        <button
-          onClick={() => setUsersOpen((p) => !p)}
-          className={cn(
-            "flex w-full items-center justify-between rounded-md px-3 py-2 text-sm font-medium transition",
-            isUsersActive
-              ? "bg-primary text-primary-foreground"
-              : "text-muted-foreground hover:bg-muted",
-          )}
-        >
-          <span className="flex items-center gap-3">
-            <Users className="h-4 w-4" />
-            Users
+    <Sidebar collapsible="icon" className="group  ]">
+      {/* HEADER */}
+      <SidebarHeader className="px-1 py-3 font-semibold text-lg flex justify-center">
+        {isCollapsed ? (
+          <span className="w-10 h-10 flex items-center justify-center rounded-full bg-accent-foreground text-white">
+            AP
           </span>
-          <ChevronDown
-            className={cn(
-              "h-4 w-4 transition-transform",
-              usersOpen && "rotate-180",
-            )}
-          />
-        </button>
-
-        {usersOpen && (
-          <div className="ml-6 space-y-1">
-            <SubLink
-              href="/admin/customers"
-              label="Customers"
-              active={isNested("/admin/customers")}
-            />
-            <SubLink
-              href="/admin/providers"
-              label="Providers"
-              active={isNested("/admin/providers")}
-            />
-            <SubLink
-              href="/admin/admins"
-              label="Admins"
-              active={isNested("/admin/admins")}
-            />
-          </div>
+        ) : (
+          <span>Admin Panel</span>
         )}
+      </SidebarHeader>
 
-        {/* //! Orders */}
-        <Link
-          href="/admin/orders"
-          className={cn(
-            "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition",
-            isNested("/admin/orders")
-              ? "bg-primary text-primary-foreground"
-              : "text-muted-foreground hover:bg-muted",
-          )}
-        >
-          <ShoppingBag className="h-4 w-4" />
-          Orders
-        </Link>
+      {/* CONTENT */}
+      <SidebarContent className="px-1">
+        <nav className="space-y-1">
+          {adminSidebarMenu.map((item, index) => {
+            const Icon = item.icon;
+            const active = isRouteActive(pathname, item);
 
-        {/* //! Categories */}
-        <Link
-          href="/admin/categories"
-          className={cn(
-            "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition",
-            isNested("/admin/categories")
-              ? "bg-primary text-primary-foreground"
-              : "text-muted-foreground hover:bg-muted",
-          )}
-        >
-          <Tags className="h-4 w-4" />
-          Categories
-        </Link>
+            //! NESTED MENU
+            if (item.items?.length) {
+              return (
+                <TooltipProvider key={index} delayDuration={0}>
+                  <Tooltip open={isCollapsed ? undefined : false}>
+                    <details
+                      open={!isCollapsed && active}
+                      className="group/details"
+                    >
+                      <TooltipTrigger asChild>
+                        <summary
+                          onClick={(e) => {
+                            if (isCollapsed) {
+                              e.preventDefault();
+                              setOpen(true);
+                            }
+                          }}
+                          className={cn(
+                            "flex cursor-pointer items-center justify-between rounded-md px-3 py-2 hover:bg-accent",
+                            active && "bg-accent font-medium",
+                          )}
+                        >
+                          <div className="flex items-center gap-3">
+                            <Icon className="h-5 w-5 shrink-0" />
+                            {!isCollapsed && <span>{item.title}</span>}
+                          </div>
 
-        {/* //! all meals */}
-        <Link
-          href="/admin/all-meals"
-          className={cn(
-            "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition",
-            isNested("/admin/all-meals")
-              ? "bg-primary text-primary-foreground"
-              : "text-muted-foreground hover:bg-muted",
-          )}
-        >
-          <UtensilsCrossed className="h-4 w-4" />
-          All Meals
-        </Link>
-      </nav>
-    </aside>
+                          {!isCollapsed && (
+                            <ChevronDown className="h-4 w-4 transition-transform group-open/details:rotate-180" />
+                          )}
+                        </summary>
+                      </TooltipTrigger>
+
+                      {/*//! Tooltip (collapsed only) */}
+                      {isCollapsed && (
+                        <TooltipContent side="right">
+                          {item.title}
+                        </TooltipContent>
+                      )}
+
+                      {/*//! Nested routes */}
+                      {!isCollapsed && (
+                        <div className="ml-6 mt-1 space-y-1">
+                          {item.items.map((sub: any, i: number) => {
+                            const subActive =
+                              pathname === sub.url ||
+                              pathname.startsWith(sub.url + "/");
+
+                            return (
+                              <Link
+                                key={i}
+                                href={sub.url}
+                                className={cn(
+                                  "block rounded-md px-3 py-1.5 text-sm hover:bg-accent",
+                                  subActive && "bg-accent font-medium",
+                                )}
+                              >
+                                {sub.title}
+                              </Link>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </details>
+                  </Tooltip>
+                </TooltipProvider>
+              );
+            }
+
+            //!  SINGLE MENU
+            return (
+              <TooltipProvider key={index} delayDuration={0}>
+                <Tooltip open={isCollapsed ? undefined : false}>
+                  <TooltipTrigger asChild>
+                    <Link
+                      href={item.url!}
+                      className={cn(
+                        "flex items-center gap-3 rounded-md px-3 py-2 hover:bg-accent",
+                        active && "bg-accent font-medium",
+                      )}
+                    >
+                      <Icon className="h-5 w-5 shrink-0" />
+                      {!isCollapsed && <span>{item.title}</span>}
+                    </Link>
+                  </TooltipTrigger>
+
+                  {isCollapsed && (
+                    <TooltipContent side="right">{item.title}</TooltipContent>
+                  )}
+                </Tooltip>
+              </TooltipProvider>
+            );
+          })}
+        </nav>
+      </SidebarContent>
+    </Sidebar>
   );
 };
 
 export default AdminSidebar;
-
-//! Sub Link
-const SubLink = ({
-  href,
-  label,
-  active,
-}: {
-  href: string;
-  label: string;
-  active: boolean;
-}) => (
-  <Link
-    href={href}
-    className={cn(
-      "block rounded-md px-3 py-2 text-sm transition",
-      active
-        ? "bg-muted font-medium text-primary"
-        : "text-muted-foreground hover:bg-muted",
-    )}
-  >
-    {label}
-  </Link>
-);

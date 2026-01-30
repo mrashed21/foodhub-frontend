@@ -1,4 +1,3 @@
-import Navbar from "@/common/navbar/navbar";
 import QueryProvider from "@/providers/query-provider";
 import "bd-number-validator/react/style.css";
 import type { Metadata } from "next";
@@ -39,7 +38,6 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${poppins.variable} antialiased`}
       >
         <QueryProvider>
-          <Navbar />
           {children}
           <Toaster />
         </QueryProvider>
