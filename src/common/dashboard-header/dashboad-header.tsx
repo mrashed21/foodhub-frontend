@@ -97,6 +97,7 @@ const DashboardHeader = () => {
               className="text-red-500"
               onClick={async () => {
                 await authClient.signOut();
+                router.refresh();
                 router.replace("/auth/login");
               }}
             >

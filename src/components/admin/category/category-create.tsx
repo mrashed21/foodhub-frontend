@@ -43,6 +43,8 @@ const CategoryCreate = ({ open, onOpenChange }: CategoryCreateModalProps) => {
   });
 
   const onSubmit = async (data: FormValues) => {
+    const toastId = toast.loading("Creating category...");
+
     try {
       await mutateAsync({
         name: data.name,
@@ -50,13 +52,18 @@ const CategoryCreate = ({ open, onOpenChange }: CategoryCreateModalProps) => {
         isActive: data.isActive,
       });
 
-      toast.success("Category created successfully");
+      toast.success("Category created successfully", {
+        id: toastId,
+      });
 
       reset();
       onOpenChange(false);
     } catch (error: any) {
       toast.error(
         error?.response?.data?.message || "Failed to create category",
+        {
+          id: toastId,
+        },
       );
     }
   };

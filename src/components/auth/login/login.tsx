@@ -53,6 +53,7 @@ const Login = () => {
       }
 
       toast.success("Login successful");
+      router.refresh();
       if (result?.user?.role === "customer") {
         router.push("/user");
       }

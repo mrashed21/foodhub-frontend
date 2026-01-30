@@ -15,7 +15,7 @@ interface TableSkeletonProps {
   rows?: number;
 }
 
-const TableSkeleton = ({ columns, rows = 5 }: TableSkeletonProps) => {
+const TableSkeleton = ({ columns = 10, rows = 10 }: TableSkeletonProps) => {
   return (
     <div className="rounded-md border">
       <Table>
