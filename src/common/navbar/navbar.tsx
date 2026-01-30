@@ -3,6 +3,7 @@
 import { LogOut, Menu, ShoppingCart, User as UserIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -39,9 +40,21 @@ const getDashboardRoute = (role: User["role"]) => {
 
 const Navbar = () => {
   const router = useRouter();
-
   const { data } = authClient.useSession();
   const user: SessionUser | null = data?.user ?? null;
+
+  const [cartCount, setCartCount] = useState(0);
+
+  useEffect(() => {
+    const syncCart = () => {
+      const cart = JSON.parse(localStorage.getItem("foodhub_cart") || "[]");
+      setCartCount(cart.length);
+    };
+
+    syncCart();
+    window.addEventListener("cart-updated", syncCart);
+    return () => window.removeEventListener("cart-updated", syncCart);
+  }, []);
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b bg-background">
@@ -50,6 +63,7 @@ const Navbar = () => {
           <Link href="/" className="text-xl font-bold text-primary ml-4">
             FoodHub
           </Link>
+
           <div className="hidden md:flex items-center gap-6">
             {navItems.map((item) => (
               <Link
@@ -63,10 +77,15 @@ const Navbar = () => {
           </div>
 
           <div className="hidden md:flex items-center gap-2">
-            <Link href="/cart">
+            <Link href="/cart" className="relative">
               <Button variant="ghost" size="icon">
                 <ShoppingCart className="h-5 w-5" />
               </Button>
+              {cartCount > 0 && (
+                <span className="absolute -top-1 -right-1 h-5 min-w-5 rounded-full bg-primary text-xs text-white flex items-center justify-center px-1">
+                  {cartCount}
+                </span>
+              )}
             </Link>
 
             {!user || !user.emailVerified ? (
@@ -128,7 +147,14 @@ const Navbar = () => {
                 ))}
 
                 <Link href="/cart" className="flex items-center gap-2">
-                  <ShoppingCart className="h-4 w-4" />
+                  <div className="relative">
+                    <ShoppingCart className="h-4 w-4" />
+                    {cartCount > 0 && (
+                      <span className="absolute -top-2 -right-2 h-4 min-w-4 rounded-full bg-primary text-[10px] text-white flex items-center justify-center px-1">
+                        {cartCount}
+                      </span>
+                    )}
+                  </div>
                   <span>Cart</span>
                 </Link>
 
