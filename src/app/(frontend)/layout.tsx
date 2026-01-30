@@ -1,3 +1,4 @@
+import Footer from "@/common/footer/footer";
 import Navbar from "@/common/navbar/navbar";
 
 const FrontendLayout = ({
@@ -9,6 +10,7 @@ const FrontendLayout = ({
     <>
       <Navbar />
       <main>{children}</main>
+      <Footer />
     </>
   );
 };

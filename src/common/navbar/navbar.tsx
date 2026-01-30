@@ -1,7 +1,8 @@
 "use client";
 
-import { LogOut, Menu, User as UserIcon } from "lucide-react";
+import { LogOut, Menu, ShoppingCart, User as UserIcon } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -15,12 +16,12 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 import { authClient } from "@/lib/auth-client";
 import { SessionUser, User } from "@/types/user-types";
-import { useRouter } from "next/navigation";
+import Container from "../container/container";
 
 const navItems = [
   { label: "Home", href: "/" },
-  { label: "Restaurants", href: "/restaurants" },
-  { label: "Orders", href: "/orders" },
+  { label: "Meals", href: "/meals" },
+  { label: "Restaurants", href: "/providers" },
 ];
 
 const getDashboardRoute = (role: User["role"]) => {
@@ -44,115 +45,130 @@ const Navbar = () => {
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b bg-background">
-      <div className="container mx-auto flex h-16 items-center justify-between px-4">
-        {/* Logo */}
-        <Link href="/" className="text-xl font-bold text-primary">
-          FoodHub
-        </Link>
+      <Container>
+        <div className="flex h-16 items-center justify-between">
+          <Link href="/" className="text-xl font-bold text-primary ml-4">
+            FoodHub
+          </Link>
+          <div className="hidden md:flex items-center gap-6">
+            {navItems.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="text-sm font-medium text-muted-foreground transition hover:text-primary"
+              >
+                {item.label}
+              </Link>
+            ))}
+          </div>
 
-        {/* Desktop Nav */}
-        <div className="hidden md:flex items-center gap-6">
-          {navItems.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="text-sm font-medium text-muted-foreground hover:text-primary transition"
-            >
-              {item.label}
+          <div className="hidden md:flex items-center gap-2">
+            <Link href="/cart">
+              <Button variant="ghost" size="icon">
+                <ShoppingCart className="h-5 w-5" />
+              </Button>
             </Link>
-          ))}
-        </div>
 
-        {/* Right Side */}
-        <div className="hidden md:flex items-center gap-3">
-          {!user || !user.emailVerified ? (
-            <>
-              <Link href="/auth/login">
-                <Button variant="ghost">Login</Button>
-              </Link>
-              <Link href="/auth/register">
-                <Button>Sign Up</Button>
-              </Link>
-            </>
-          ) : (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon">
-                  <UserIcon className="h-5 w-5" />
-                </Button>
-              </DropdownMenuTrigger>
-
-              <DropdownMenuContent align="end" className="w-48">
-                <DropdownMenuItem asChild>
-                  <Link href={getDashboardRoute(user.role!)}>Dashboard</Link>
-                </DropdownMenuItem>
-
-                <Separator />
-
-                <DropdownMenuItem
-                  className="text-red-500"
-                  onClick={() => authClient.signOut()}
-                >
-                  <LogOut className="mr-2 h-4 w-4" />
-                  Logout
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          )}
-        </div>
-
-        {/* Mobile Menu */}
-        <Sheet>
-          <SheetTrigger asChild>
-            <Button variant="ghost" size="icon" className="md:hidden">
-              <Menu className="h-5 w-5" />
-            </Button>
-          </SheetTrigger>
-
-          <SheetContent side="right" className="w-72">
-            <div className="flex flex-col gap-4 mt-6">
-              {navItems.map((item) => (
-                <Link key={item.href} href={item.href}>
-                  {item.label}
+            {!user || !user.emailVerified ? (
+              <>
+                <Link href="/auth/login">
+                  <Button variant="ghost">Login</Button>
                 </Link>
-              ))}
+                <Link href="/auth/register">
+                  <Button>Sign Up</Button>
+                </Link>
+              </>
+            ) : (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon">
+                    <UserIcon className="h-5 w-5" />
+                  </Button>
+                </DropdownMenuTrigger>
 
-              <Separator />
+                <DropdownMenuContent align="end" className="w-48">
+                  <DropdownMenuItem asChild>
+                    <Link href={getDashboardRoute(user.role!)}>Dashboard</Link>
+                  </DropdownMenuItem>
 
-              {!user || !user.emailVerified ? (
-                <>
-                  <Link href="/auth/login">
-                    <Button variant="ghost" className="w-full">
-                      Login
-                    </Button>
-                  </Link>
-                  <Link href="/auth/register">
-                    <Button className="w-full">Sign Up</Button>
-                  </Link>
-                </>
-              ) : (
-                <>
-                  <Link href={getDashboardRoute(user.role!)}>
-                    <Button variant="ghost" className="w-full">
-                      Dashboard
-                    </Button>
-                  </Link>
-                  <Button
-                    variant="destructive"
-                    className="w-full"
+                  <Separator />
+
+                  <DropdownMenuItem
+                    className="text-red-500 cursor-pointer"
                     onClick={async () => {
                       await authClient.signOut();
                       router.replace("/");
                     }}
                   >
+                    <LogOut className="mr-2 h-4 w-4" />
                     Logout
-                  </Button>
-                </>
-              )}
-            </div>
-          </SheetContent>
-        </Sheet>
-      </div>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
+          </div>
+
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="icon" className="md:hidden">
+                <Menu className="h-5 w-5" />
+              </Button>
+            </SheetTrigger>
+
+            <SheetContent side="right" className="w-72">
+              <div className="mt-6 flex flex-col gap-4 px-4 py-4">
+                {navItems.map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className="text-sm font-medium"
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+
+                <Link href="/cart" className="flex items-center gap-2">
+                  <ShoppingCart className="h-4 w-4" />
+                  <span>Cart</span>
+                </Link>
+
+                <Separator />
+
+                {!user || !user.emailVerified ? (
+                  <>
+                    <Link href="/auth/login">
+                      <Button variant="ghost" className="w-full">
+                        Login
+                      </Button>
+                    </Link>
+                    <Link href="/auth/register">
+                      <Button className="w-full">Sign Up</Button>
+                    </Link>
+                  </>
+                ) : (
+                  <>
+                    <Link href={getDashboardRoute(user.role!)}>
+                      <Button variant="ghost" className="w-full">
+                        Dashboard
+                      </Button>
+                    </Link>
+                    <Button
+                      variant="destructive"
+                      className="w-full"
+                      onClick={async () => {
+                        await authClient.signOut();
+                        router.replace("/");
+                      }}
+                    >
+                      Logout
+                    </Button>
+                  </>
+                )}
+              </div>
+            </SheetContent>
+          </Sheet>
+        </div>
+      </Container>
     </nav>
   );
 };
