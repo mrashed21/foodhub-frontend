@@ -50,7 +50,7 @@ const AdminHeader = () => {
     <header className="sticky top-0 z-40 flex h-14 items-center justify-between border-b bg-background px-6">
       {/* LEFT */}
       <div className="flex items-center gap-3">
-        {/* 🔥 Sidebar Toggle */}
+        {/* Sidebar Toggle */}
         <Button variant="ghost" size="icon" onClick={toggleSidebar}>
           <Menu className="h-5 w-5" />
         </Button>
@@ -80,7 +80,7 @@ const AdminHeader = () => {
         </Breadcrumb>
       </div>
 
-      {/* RIGHT */}
+      {/* //! RIGHT */}
       {user && (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

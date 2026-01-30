@@ -1,169 +1,161 @@
 "use client";
 
-import {
-  ChevronDown,
-  LayoutDashboard,
-  Settings,
-  ShoppingBag,
-  Utensils,
-} from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarHeader,
+  useSidebar,
+} from "@/components/ui/sidebar";
+
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 import { cn } from "@/lib/utils";
+import { vendorSidebarMenu } from "./vendor-sidebar-data";
 
-//! Orders Route Group
-const ORDER_ROUTES = [
-  "/vendor/pending-orders",
-  "/vendor/processing-orders",
-  "/vendor/completed-orders",
-  "/vendor/cancelled-orders",
-  "/vendor/returned-orders",
-];
+const isRouteActive = (pathname: string, item: any) => {
+  if (item.url) {
+    return pathname === item.url || pathname.startsWith(item.url + "/");
+  }
+
+  if (item.items?.length) {
+    return item.items.some(
+      (sub: any) => pathname === sub.url || pathname.startsWith(sub.url + "/"),
+    );
+  }
+
+  return false;
+};
 
 const VendorSidebar = () => {
   const pathname = usePathname();
+  const { state, setOpen } = useSidebar();
 
-  //! Active Helpers (IMPORTANT)
-  const isExact = (href: string) => pathname === href;
-
-  const isNested = (href: string) =>
-    pathname === href || pathname.startsWith(`${href}/`);
-
-  const isOrdersActive = ORDER_ROUTES.some(
-    (route) => pathname === route || pathname.startsWith(`${route}/`),
-  );
-
-  //! Orders Dropdown State
-  const [ordersOpen, setOrdersOpen] = useState(isOrdersActive);
+  const isCollapsed = state === "collapsed";
 
   return (
-    <aside className="w-64 border-r bg-background sticky top-[70px] h-[calc(100vh-70px)]">
-      <div className="p-6 text-xl font-bold text-primary">Vendor Panel</div>
-
-      <nav className="px-4 space-y-1">
-        {/*//! Dashboard */}
-        <Link
-          href="/vendor"
-          className={cn(
-            "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition",
-            isExact("/vendor")
-              ? "bg-primary text-primary-foreground"
-              : "text-muted-foreground hover:bg-muted",
-          )}
-        >
-          <LayoutDashboard className="h-4 w-4" />
-          Dashboard
-        </Link>
-
-        {/*//! Menu */}
-        <Link
-          href="/vendor/menu"
-          className={cn(
-            "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition",
-            isNested("/vendor/menu")
-              ? "bg-primary text-primary-foreground"
-              : "text-muted-foreground hover:bg-muted",
-          )}
-        >
-          <Utensils className="h-4 w-4" />
-          Menu
-        </Link>
-
-        {/*//! Orders Dropdown */}
-        <button
-          onClick={() => setOrdersOpen((prev) => !prev)}
-          className={cn(
-            "flex w-full items-center justify-between rounded-md px-3 py-2 text-sm font-medium transition",
-            isOrdersActive
-              ? "bg-primary text-primary-foreground"
-              : "text-muted-foreground hover:bg-muted",
-          )}
-        >
-          <span className="flex items-center gap-3">
-            <ShoppingBag className="h-4 w-4" />
-            Orders
+    <Sidebar collapsible="icon" className="transition-all duration-300">
+      <SidebarHeader className="px-1 py-3 font-semibold text-lg flex justify-center">
+        {isCollapsed ? (
+          <span className="w-10 h-10 flex items-center justify-center rounded-full bg-accent-foreground text-white">
+            VP
           </span>
-          <ChevronDown
-            className={cn(
-              "h-4 w-4 transition-transform",
-              ordersOpen && "rotate-180",
-            )}
-          />
-        </button>
-
-        {ordersOpen && (
-          <div className="ml-6 space-y-1">
-            <OrderLink
-              href="/vendor/pending-orders"
-              label="Pending Orders"
-              active={isNested("/vendor/pending-orders")}
-            />
-            <OrderLink
-              href="/vendor/processing-orders"
-              label="Processing Orders"
-              active={isNested("/vendor/processing-orders")}
-            />
-            <OrderLink
-              href="/vendor/completed-orders"
-              label="Completed Orders"
-              active={isNested("/vendor/completed-orders")}
-            />
-            <OrderLink
-              href="/vendor/cancelled-orders"
-              label="Cancelled Orders"
-              active={isNested("/vendor/cancelled-orders")}
-            />
-            <OrderLink
-              href="/vendor/returned-orders"
-              label="Returned Orders"
-              active={isNested("/vendor/returned-orders")}
-            />
-          </div>
+        ) : (
+          <span>Vendor Panel</span>
         )}
+      </SidebarHeader>
 
-        {/*//!  Settings  */}
-        <Link
-          href="/vendor/settings"
-          className={cn(
-            "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition",
-            isNested("/vendor/settings")
-              ? "bg-primary text-primary-foreground"
-              : "text-muted-foreground hover:bg-muted",
-          )}
-        >
-          <Settings className="h-4 w-4" />
-          Settings
-        </Link>
-      </nav>
-    </aside>
+      <SidebarContent className="px-1">
+        <nav className="space-y-1">
+          {vendorSidebarMenu.map((item, index) => {
+            const Icon = item.icon;
+            const active = isRouteActive(pathname, item);
+
+            /* //! NESTED (Orders) */
+            if (item.items?.length) {
+              return (
+                <TooltipProvider key={index} delayDuration={0}>
+                  <Tooltip open={isCollapsed ? undefined : false}>
+                    <details
+                      open={!isCollapsed && active}
+                      className="group/details"
+                    >
+                      <TooltipTrigger asChild>
+                        <summary
+                          onClick={(e) => {
+                            if (isCollapsed) {
+                              e.preventDefault();
+                              setOpen(true);
+                            }
+                          }}
+                          className={cn(
+                            "flex cursor-pointer items-center justify-between rounded-md px-3 py-2 hover:bg-accent",
+                            active && "bg-accent font-medium",
+                          )}
+                        >
+                          <div className="flex items-center gap-3">
+                            <Icon className="h-5 w-5 shrink-0" />
+                            {!isCollapsed && <span>{item.title}</span>}
+                          </div>
+
+                          {!isCollapsed && (
+                            <ChevronDown className="h-4 w-4 transition-transform group-open/details:rotate-180" />
+                          )}
+                        </summary>
+                      </TooltipTrigger>
+
+                      {/* //! Tooltip (collapsed) */}
+                      {isCollapsed && (
+                        <TooltipContent side="right">
+                          {item.title}
+                        </TooltipContent>
+                      )}
+
+                      {/* //! Sub routes */}
+                      {!isCollapsed && (
+                        <div className="ml-6 mt-1 space-y-1">
+                          {item.items.map((sub: any, i: number) => {
+                            const subActive =
+                              pathname === sub.url ||
+                              pathname.startsWith(sub.url + "/");
+
+                            return (
+                              <Link
+                                key={i}
+                                href={sub.url}
+                                className={cn(
+                                  "block rounded-md px-3 py-1.5 text-sm hover:bg-accent",
+                                  subActive && "bg-accent font-medium",
+                                )}
+                              >
+                                {sub.title}
+                              </Link>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </details>
+                  </Tooltip>
+                </TooltipProvider>
+              );
+            }
+
+            /* //! SINGLE  */
+            return (
+              <TooltipProvider key={index} delayDuration={0}>
+                <Tooltip open={isCollapsed ? undefined : false}>
+                  <TooltipTrigger asChild>
+                    <Link
+                      href={item.url!}
+                      className={cn(
+                        "flex items-center gap-3 rounded-md px-3 py-2 hover:bg-accent",
+                        active && "bg-accent font-medium",
+                      )}
+                    >
+                      <Icon className="h-5 w-5 shrink-0" />
+                      {!isCollapsed && <span>{item.title}</span>}
+                    </Link>
+                  </TooltipTrigger>
+
+                  {isCollapsed && (
+                    <TooltipContent side="right">{item.title}</TooltipContent>
+                  )}
+                </Tooltip>
+              </TooltipProvider>
+            );
+          })}
+        </nav>
+      </SidebarContent>
+    </Sidebar>
   );
 };
 
 export default VendorSidebar;
-
-//! Order Sub Link Component
-const OrderLink = ({
-  href,
-  label,
-  active,
-}: {
-  href: string;
-  label: string;
-  active: boolean;
-}) => {
-  return (
-    <Link
-      href={href}
-      className={cn(
-        "block rounded-md px-3 py-2 text-sm transition",
-        active
-          ? "bg-muted font-medium text-primary"
-          : "text-muted-foreground hover:bg-muted",
-      )}
-    >
-      {label}
-    </Link>
-  );
-};
