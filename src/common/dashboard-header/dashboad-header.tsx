@@ -94,7 +94,7 @@ const DashboardHeader = () => {
             <DropdownMenuItem disabled>{user.email}</DropdownMenuItem>
             <Separator />
             <DropdownMenuItem
-              className="text-red-500"
+              className="cursor-pointer text-red-500"
               onClick={async () => {
                 await authClient.signOut();
                 router.refresh();

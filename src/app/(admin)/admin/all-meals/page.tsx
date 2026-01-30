@@ -1,9 +1,12 @@
+import AllMeals from "@/components/admin/all-meals/all-meals";
+
+export const metadata = {
+  title: "All Meals",
+};
 const AllMealsPage = () => {
   return (
-    <section className="flex-1 p-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">All Meals</h1>
-      </div>
+    <section className="flex-1 ">
+      <AllMeals />
     </section>
   );
 };

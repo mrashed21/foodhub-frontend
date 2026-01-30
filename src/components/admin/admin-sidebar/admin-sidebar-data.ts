@@ -32,7 +32,7 @@ export const adminSidebarMenu = [
     icon: Tags,
   },
   {
-    title: "All Meals",
+    title: "All Menus",
     url: "/admin/all-meals",
     icon: UtensilsCrossed,
   },
