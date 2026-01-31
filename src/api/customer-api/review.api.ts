@@ -46,10 +46,6 @@ const getReviewsByMenuApi = async ({
   return data;
 };
 
-/* ============================
-   HOOKS
-============================ */
-
 //! CREATE REVIEW hook
 export const useCreateReview = () => {
   const queryClient = useQueryClient();
@@ -58,12 +54,10 @@ export const useCreateReview = () => {
     mutationFn: createReviewApi,
 
     onSuccess: (_, variables) => {
-      // invalidate menu reviews
       queryClient.invalidateQueries({
         queryKey: ["review", variables.menuId],
       });
 
-      // optional: invalidate orders (for isReviewed flag)
       queryClient.invalidateQueries({
         queryKey: ["my-orders"],
       });
@@ -85,5 +79,20 @@ export const useGetReviewsByMenu = ({
     queryKey: ["reviews", menuId, page, limit],
     queryFn: () => getReviewsByMenuApi({ menuId, page, limit }),
     enabled: !!menuId,
+  });
+};
+
+// !get review for home
+
+const getReviewForHomeApi = async () => {
+  const { data } = await api.get("/review/home");
+  return data;
+};
+//!get CUSTOMER – MY ORDERS
+
+export const useReviewForHome = () => {
+  return useQuery({
+    queryKey: ["review/home"],
+    queryFn: () => getReviewForHomeApi(),
   });
 };

@@ -1,37 +1,20 @@
 "use client";
 
+import { useReviewForHome } from "@/api/customer-api/review.api";
 import Container from "@/common/container/container";
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
 } from "@/components/ui/carousel";
+import { Skeleton } from "@/components/ui/skeleton";
 import Autoplay from "embla-carousel-autoplay";
+import { Star } from "lucide-react";
 import { useRef } from "react";
 
-/* ---------------------------------------------------
-   Dummy testimonials (later API data replaceable)
---------------------------------------------------- */
-const testimonials = [
-  {
-    quote: "Amazing food and super fast delivery!",
-    name: "John Doe",
-  },
-  {
-    quote: "Best food ordering experience I’ve had.",
-    name: "Sarah Ahmed",
-  },
-  {
-    quote: "Great variety and excellent service.",
-    name: "Michael Lee",
-  },
-  {
-    quote: "Loved the UI and the food quality!",
-    name: "Ayesha Khan",
-  },
-];
-
 const Testimonials = () => {
+  const { data, isLoading } = useReviewForHome();
+
   const autoplay = useRef(
     Autoplay({
       delay: 3500,
@@ -43,31 +26,62 @@ const Testimonials = () => {
     <section className="py-16 bg-muted/30">
       <Container>
         <div className="px-4">
-          {/* Section title */}
           <h2 className="text-2xl font-semibold mb-10 text-center">
             What Customers Say
           </h2>
 
-          {/* Carousel */}
           <Carousel
-            opts={{
-              align: "start",
-              loop: true,
-            }}
+            opts={{ align: "start", loop: true }}
             plugins={[autoplay.current]}
             className="w-full"
           >
             <CarouselContent>
-              {testimonials.map((item, i) => (
-                <CarouselItem key={i} className="md:basis-1/2 lg:basis-1/3">
-                  <div className="bg-background p-6 rounded-lg shadow-sm h-full">
-                    <p className="text-sm text-muted-foreground leading-relaxed">
-                      “{item.quote}”
-                    </p>
-                    <p className="mt-4 font-medium text-sm">— {item.name}</p>
-                  </div>
-                </CarouselItem>
-              ))}
+              {/* 🔄 Loading Skeleton */}
+              {isLoading &&
+                Array.from({ length: 3 }).map((_, i) => (
+                  <CarouselItem key={i} className="md:basis-1/2 lg:basis-1/3">
+                    <div className="bg-background p-6 rounded-lg shadow-sm h-full space-y-4">
+                      <Skeleton className="h-4 w-full" />
+                      <Skeleton className="h-4 w-5/6" />
+                      <div className="flex items-center gap-2 mt-4">
+                        <Skeleton className="h-4 w-20" />
+                        <Skeleton className="h-4 w-16" />
+                      </div>
+                    </div>
+                  </CarouselItem>
+                ))}
+
+              {/* ✅ Real Reviews */}
+              {!isLoading &&
+                data?.data?.map((review: any) => (
+                  <CarouselItem
+                    key={review.id}
+                    className="md:basis-1/2 lg:basis-1/3"
+                  >
+                    <div className="bg-background p-6 rounded-lg shadow-sm h-full flex flex-col justify-between">
+                      {/* Comment */}
+                      <p className="text-sm text-muted-foreground leading-relaxed">
+                        “{review.comment}”
+                      </p>
+
+                      {/* User + Rating */}
+                      <div className="mt-5 flex items-center justify-between">
+                        <p className="font-medium text-sm">
+                          — {review.user?.name}
+                        </p>
+
+                        <div className="flex items-center gap-1">
+                          {Array.from({ length: review.rating }).map((_, i) => (
+                            <Star
+                              key={i}
+                              className="w-4 h-4 fill-yellow-400 text-yellow-400"
+                            />
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </CarouselItem>
+                ))}
             </CarouselContent>
           </Carousel>
         </div>

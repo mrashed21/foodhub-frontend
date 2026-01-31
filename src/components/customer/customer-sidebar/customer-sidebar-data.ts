@@ -1,9 +1,4 @@
-import {
-  LayoutDashboard,
-  ShoppingBag,
-  MapPin,
-  Settings,
-} from "lucide-react";
+import { LayoutDashboard, Settings, ShoppingBag, StarIcon } from "lucide-react";
 
 export const customerSidebarMenu = [
   {
@@ -17,9 +12,9 @@ export const customerSidebarMenu = [
     icon: ShoppingBag,
   },
   {
-    title: "Addresses",
-    url: "/user/addresses",
-    icon: MapPin,
+    title: "Reviews",
+    url: "/user/reviews",
+    icon: StarIcon,
   },
   {
     title: "Settings",
