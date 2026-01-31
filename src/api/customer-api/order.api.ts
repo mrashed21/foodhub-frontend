@@ -129,61 +129,15 @@ export const useOrdersDetails = (id: string) => {
   });
 };
 
-/* =========================
-   PROVIDER – ORDERS
-========================= */
 
-interface ProviderOrdersParams {
-  search?: string;
-}
 
-const getOrdersForProviderApi = async ({ search }: ProviderOrdersParams) => {
-  const params: any = {};
+// ! UPDATE ORDER STATUS
 
-  if (search?.trim()) {
-    params.search = search;
-  }
-
-  const { data } = await api.get("/orders/provider", { params });
-  return data;
-};
-
-export const useOrdersForProvider = ({ search }: ProviderOrdersParams) => {
-  return useQuery({
-    queryKey: ["provider-orders", search],
-    queryFn: () => getOrdersForProviderApi({ search }),
-  });
-};
-
-/* =========================
-   ORDER DETAILS
-========================= */
-
-const getOrderByIdApi = async (id: string) => {
-  const { data } = await api.get(`/orders/${id}`);
-  return data;
-};
-
-export const useOrderById = (id: string) => {
-  return useQuery({
-    queryKey: ["order", id],
-    queryFn: () => getOrderByIdApi(id),
-    enabled: !!id,
-  });
-};
-
-/* =========================
-   UPDATE ORDER STATUS
-========================= */
-
-const updateOrderStatusApi = async ({
-  id,
-  status,
-}: {
+const updateOrderStatusApi = async (payload: {
   id: string;
   status: OrderStatus;
 }) => {
-  const { data } = await api.patch(`/orders/${id}/status`, { status });
+  const { data } = await api.patch("/order", payload);
   return data;
 };
 
@@ -192,10 +146,19 @@ export const useUpdateOrderStatus = () => {
 
   return useMutation({
     mutationFn: updateOrderStatusApi,
+
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: ["order", variables.id] });
-      queryClient.invalidateQueries({ queryKey: ["my-orders"] });
-      queryClient.invalidateQueries({ queryKey: ["provider-orders"] });
+      queryClient.invalidateQueries({
+        queryKey: ["order", variables.id],
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ["my-orders"],
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ["provider-orders"],
+      });
     },
   });
 };

@@ -228,7 +228,7 @@ const CustomSelect = <T,>({
                   e.stopPropagation();
                   removeOption(item);
                 }}
-                className="text-sm font-bold text-red-500"
+                className="text-sm font-bold text-red-500 cursor-pointer"
               >
                 ✕
               </button>

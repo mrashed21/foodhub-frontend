@@ -60,73 +60,73 @@ const VendorSidebar = () => {
             const active = isRouteActive(pathname, item);
 
             /* //! NESTED (Orders) */
-            if (item.items?.length) {
-              return (
-                <TooltipProvider key={index} delayDuration={0}>
-                  <Tooltip open={isCollapsed ? undefined : false}>
-                    <details
-                      open={!isCollapsed && active}
-                      className="group/details"
-                    >
-                      <TooltipTrigger asChild>
-                        <summary
-                          onClick={(e) => {
-                            if (isCollapsed) {
-                              e.preventDefault();
-                              setOpen(true);
-                            }
-                          }}
-                          className={cn(
-                            "flex cursor-pointer items-center justify-between rounded-md px-3 py-2 hover:bg-accent",
-                            active && "bg-accent font-medium",
-                          )}
-                        >
-                          <div className="flex items-center gap-3">
-                            <Icon className="h-5 w-5 shrink-0" />
-                            {!isCollapsed && <span>{item.title}</span>}
-                          </div>
+            // if (item?.items?.length) {
+            //   return (
+            //     <TooltipProvider key={index} delayDuration={0}>
+            //       <Tooltip open={isCollapsed ? undefined : false}>
+            //         <details
+            //           open={!isCollapsed && active}
+            //           className="group/details"
+            //         >
+            //           <TooltipTrigger asChild>
+            //             <summary
+            //               onClick={(e) => {
+            //                 if (isCollapsed) {
+            //                   e.preventDefault();
+            //                   setOpen(true);
+            //                 }
+            //               }}
+            //               className={cn(
+            //                 "flex cursor-pointer items-center justify-between rounded-md px-3 py-2 hover:bg-accent",
+            //                 active && "bg-accent font-medium",
+            //               )}
+            //             >
+            //               <div className="flex items-center gap-3">
+            //                 <Icon className="h-5 w-5 shrink-0" />
+            //                 {!isCollapsed && <span>{item.title}</span>}
+            //               </div>
 
-                          {!isCollapsed && (
-                            <ChevronDown className="h-4 w-4 transition-transform group-open/details:rotate-180" />
-                          )}
-                        </summary>
-                      </TooltipTrigger>
+            //               {!isCollapsed && (
+            //                 <ChevronDown className="h-4 w-4 transition-transform group-open/details:rotate-180" />
+            //               )}
+            //             </summary>
+            //           </TooltipTrigger>
 
-                      {/* //! Tooltip (collapsed) */}
-                      {isCollapsed && (
-                        <TooltipContent side="right">
-                          {item.title}
-                        </TooltipContent>
-                      )}
+            //           {/* //! Tooltip (collapsed) */}
+            //           {isCollapsed && (
+            //             <TooltipContent side="right">
+            //               {item.title}
+            //             </TooltipContent>
+            //           )}
 
-                      {/* //! Sub routes */}
-                      {!isCollapsed && (
-                        <div className="ml-6 mt-1 space-y-1">
-                          {item.items.map((sub: any, i: number) => {
-                            const subActive =
-                              pathname === sub.url ||
-                              pathname.startsWith(sub.url + "/");
+            //           {/* //! Sub routes */}
+            //           {!isCollapsed && (
+            //             <div className="ml-6 mt-1 space-y-1">
+            //               {item.items.map((sub: any, i: number) => {
+            //                 const subActive =
+            //                   pathname === sub.url ||
+            //                   pathname.startsWith(sub.url + "/");
 
-                            return (
-                              <Link
-                                key={i}
-                                href={sub.url}
-                                className={cn(
-                                  "block rounded-md px-3 py-1.5 text-sm hover:bg-accent",
-                                  subActive && "bg-accent font-medium",
-                                )}
-                              >
-                                {sub.title}
-                              </Link>
-                            );
-                          })}
-                        </div>
-                      )}
-                    </details>
-                  </Tooltip>
-                </TooltipProvider>
-              );
-            }
+            //                 return (
+            //                   <Link
+            //                     key={i}
+            //                     href={sub.url}
+            //                     className={cn(
+            //                       "block rounded-md px-3 py-1.5 text-sm hover:bg-accent",
+            //                       subActive && "bg-accent font-medium",
+            //                     )}
+            //                   >
+            //                     {sub.title}
+            //                   </Link>
+            //                 );
+            //               })}
+            //             </div>
+            //           )}
+            //         </details>
+            //       </Tooltip>
+            //     </TooltipProvider>
+            //   );
+            // }
 
             /* //! SINGLE  */
             return (

@@ -14,13 +14,7 @@ export const vendorSidebarMenu = [
   {
     title: "Orders",
     icon: ShoppingBag,
-    items: [
-      { title: "Pending Orders", url: "/vendor/pending-orders" },
-      { title: "Processing Orders", url: "/vendor/processing-orders" },
-      { title: "Completed Orders", url: "/vendor/completed-orders" },
-      { title: "Cancelled Orders", url: "/vendor/cancelled-orders" },
-      { title: "Returned Orders", url: "/vendor/returned-orders" },
-    ],
+    url: "/vendor/orders",
   },
   {
     title: "Settings",
