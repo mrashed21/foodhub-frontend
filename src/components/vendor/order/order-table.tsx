@@ -23,6 +23,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import Link from "next/link";
+import { formatDate } from "@/hook/date-format";
 
 type OrderStatus = "placed" | "preparing" | "ready" | "delivered" | "cancelled";
 
@@ -149,7 +150,7 @@ const ProviderOrderTable = ({ orders, isLoading, serialNumber }: Props) => {
                 </TableCell>
 
                 <TableCell>
-                  {new Date(order.createdAt).toLocaleDateString()}
+                  {formatDate(order.createdAt)}
                 </TableCell>
 
                 <TableCell className="text-right font-medium">

@@ -11,6 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { formatDate } from "@/hook/date-format";
 
 interface AllMealsTableProps {
   data: MenuInterface[];
@@ -82,7 +83,7 @@ const AllMealsTable = ({
               </TableCell>
 
               <TableCell>
-                {new Date(menu.createdAt).toLocaleDateString()}
+                {formatDate(menu.createdAt)}
               </TableCell>
             </TableRow>
           ))}

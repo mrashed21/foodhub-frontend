@@ -28,6 +28,7 @@ import {
 
 import Link from "next/link";
 import { toast } from "sonner";
+import { formatDate } from "@/hook/date-format";
 
 type OrderStatus = "placed" | "preparing" | "cancelled" | "ready" | "delivered";
 
@@ -162,7 +163,7 @@ const MyOrderTable = ({ orders, isLoading, serialNumber }: Props) => {
                   <TableCell>{order.orderItems.length}</TableCell>
 
                   <TableCell>
-                    {new Date(order.createdAt).toLocaleDateString()}
+                    {formatDate(order.createdAt)}
                   </TableCell>
 
                   <TableCell>৳ {order.totalAmount}</TableCell>

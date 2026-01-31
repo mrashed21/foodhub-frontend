@@ -13,6 +13,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { formatDate } from "@/hook/date-format";
 import { Edit, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -115,7 +116,7 @@ const MenuTable = ({
 
               {/* Created */}
               <TableCell>
-                {new Date(menu.createdAt).toLocaleDateString()}
+                {formatDate(menu.createdAt)}
               </TableCell>
 
               {/* Actions */}
