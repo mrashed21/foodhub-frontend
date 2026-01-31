@@ -93,7 +93,7 @@ const MenuTable = ({
                     "https://i.ibb.co.com/N8PpMRr/Chat-GPT-Image-Feb-1-2026-01-49-03-AM-1.png"
                   }
                   alt={menu?.name}
-                  width={200}
+                  width={100}
                   height={80}
                 />
               </TableCell>

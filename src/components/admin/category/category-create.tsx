@@ -15,18 +15,22 @@ import { slugify } from "@/hook/slugify";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
+type FormValues = {
+  name: string;
+  isActive: boolean;
+  categoryImage?: string;
+};
+
 interface CategoryCreateModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
-type FormValues = {
-  name: string;
-  isActive: boolean;
-};
-
 const CategoryCreate = ({ open, onOpenChange }: CategoryCreateModalProps) => {
   const { mutateAsync, isPending } = useCreateCategory();
+
+  const categoryImageUrlRegex =
+    /^(https?:\/\/).+\.(jpg|jpeg|png|webp|gif|svg)$/i;
 
   const {
     register,
@@ -39,6 +43,7 @@ const CategoryCreate = ({ open, onOpenChange }: CategoryCreateModalProps) => {
     defaultValues: {
       name: "",
       isActive: true,
+      categoryImage: "",
     },
   });
 
@@ -50,6 +55,7 @@ const CategoryCreate = ({ open, onOpenChange }: CategoryCreateModalProps) => {
         name: data.name,
         slug: slugify(data.name),
         isActive: data.isActive,
+        categoryImage: data.categoryImage || undefined,
       });
 
       toast.success("Category created successfully", {
@@ -61,9 +67,7 @@ const CategoryCreate = ({ open, onOpenChange }: CategoryCreateModalProps) => {
     } catch (error: any) {
       toast.error(
         error?.response?.data?.message || "Failed to create category",
-        {
-          id: toastId,
-        },
+        { id: toastId },
       );
     }
   };
@@ -91,6 +95,25 @@ const CategoryCreate = ({ open, onOpenChange }: CategoryCreateModalProps) => {
             />
             {errors.name && (
               <p className="text-sm text-red-500">{errors.name.message}</p>
+            )}
+          </div>
+
+          {/* categoryImage URL */}
+          <div className="space-y-1">
+            <Label>Image URL</Label>
+            <Input
+              placeholder="https://example.com/category.png"
+              {...register("categoryImage", {
+                validate: (value) =>
+                  !value ||
+                  categoryImageUrlRegex.test(value) ||
+                  "Please enter a valid categoryImage URL",
+              })}
+            />
+            {errors.categoryImage && (
+              <p className="text-sm text-red-500">
+                {errors.categoryImage.message}
+              </p>
             )}
           </div>
 

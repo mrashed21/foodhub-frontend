@@ -9,6 +9,7 @@ export interface CategoryInterface {
   slug: string;
   isActive: boolean;
   createdAt: string;
+  categoryImage?: string;
   user: {
     id: string;
     name: string;
@@ -84,6 +85,7 @@ const createCategoryApi = async (payload: {
   name: string;
   slug: string;
   isActive: boolean;
+  categoryImage?: string;
 }) => {
   const { data } = await api.post("/category", payload);
   return data;
@@ -110,6 +112,7 @@ const updateCategoryApi = async ({
     name: string;
     slug: string;
     isActive: boolean;
+    categoryImage?: string;
   };
 }) => {
   const { data } = await api.patch("/category", payload);

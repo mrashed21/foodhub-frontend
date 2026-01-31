@@ -17,6 +17,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { formatDate } from "@/hook/date-format";
+import Image from "next/image";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -64,6 +65,7 @@ const CategoryTable = ({
           <TableHeader>
             <TableRow>
               <TableHead className="w-15 pl-5">S.N</TableHead>
+              <TableHead>Image</TableHead>
               <TableHead>Name</TableHead>
               <TableHead>Status</TableHead>
               <TableHead>Created By</TableHead>
@@ -83,6 +85,17 @@ const CategoryTable = ({
               categoryData.map((category, index) => (
                 <TableRow key={category.id}>
                   <TableCell className="pl-5">{serialNumber(index)}</TableCell>
+                  <TableCell className="font-medium">
+                    <Image
+                      src={
+                        category.categoryImage ||
+                        "https://i.ibb.co.com/N8PpMRr/Chat-GPT-Image-Feb-1-2026-01-49-03-AM-1.png"
+                      }
+                      alt={category?.name}
+                      width={100}
+                      height={80}
+                    />
+                  </TableCell>
                   <TableCell className="font-medium capitalize">
                     {category.name}
                   </TableCell>

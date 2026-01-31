@@ -28,6 +28,7 @@ interface CategoryUpdateProps {
 type FormValues = {
   name: string;
   isActive: boolean;
+  categoryImage?: string;
 };
 
 const CategoryUpdate = ({
@@ -36,6 +37,9 @@ const CategoryUpdate = ({
   editData,
 }: CategoryUpdateProps) => {
   const { mutateAsync, isPending } = useUpdateCategory();
+
+  const categoryImageUrlRegex =
+    /^(https?:\/\/).+\.(jpg|jpeg|png|webp|gif|svg)$/i;
 
   const {
     register,
@@ -48,6 +52,7 @@ const CategoryUpdate = ({
     defaultValues: {
       name: "",
       isActive: true,
+      categoryImage: "",
     },
   });
 
@@ -56,6 +61,7 @@ const CategoryUpdate = ({
       reset({
         name: editData.name,
         isActive: editData.isActive,
+        categoryImage: editData.categoryImage ?? "",
       });
     }
   }, [open, editData, reset]);
@@ -70,6 +76,7 @@ const CategoryUpdate = ({
           name: data.name,
           slug: slugify(data.name),
           isActive: data.isActive,
+          categoryImage: data.categoryImage || undefined,
         },
       });
 
@@ -107,6 +114,25 @@ const CategoryUpdate = ({
             />
             {errors.name && (
               <p className="text-sm text-red-500">{errors.name.message}</p>
+            )}
+          </div>
+
+          {/* categoryImage URL */}
+          <div className="space-y-1">
+            <Label>Image URL</Label>
+            <Input
+              placeholder="https://example.com/category.png"
+              {...register("categoryImage", {
+                validate: (value) =>
+                  !value ||
+                  categoryImageUrlRegex.test(value) ||
+                  "Please enter a valid categoryImage URL",
+              })}
+            />
+            {errors.categoryImage && (
+              <p className="text-sm text-red-500">
+                {errors.categoryImage.message}
+              </p>
             )}
           </div>
 

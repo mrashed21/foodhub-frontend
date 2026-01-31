@@ -30,6 +30,7 @@ interface MenuUpdateFormValues {
   category: CategoryOption | null;
   cuisine: string;
   isAvailable: boolean;
+  image?: string;
 }
 
 const MenuUpdate = ({
@@ -41,6 +42,8 @@ const MenuUpdate = ({
   onOpenChange: (open: boolean) => void;
   editData: MenuInterface | null;
 }) => {
+  const imageUrlRegex = /^(https?:\/\/).+\.(jpg|jpeg|png|webp|gif|svg)$/i;
+
   const {
     register,
     handleSubmit,
@@ -55,10 +58,9 @@ const MenuUpdate = ({
       category: null,
       cuisine: "",
       isAvailable: true,
+      image: "",
     },
   });
-
-  //! Fetch categories
 
   const { data: categories, isLoading } = usePublicCategories();
 
@@ -67,8 +69,6 @@ const MenuUpdate = ({
       label: item.name,
       value: item.id,
     })) || [];
-
-  //! Update mutation
 
   const { mutateAsync, isPending } = useUpdateMenu();
 
@@ -87,10 +87,9 @@ const MenuUpdate = ({
         : null,
       cuisine: editData.cuisine.join(", "),
       isAvailable: editData.isAvailable,
+      image: editData.image ?? "",
     });
   }, [editData, reset]);
-
-  //! Submit
 
   const onSubmit = async (values: MenuUpdateFormValues) => {
     if (!editData) return;
@@ -114,6 +113,7 @@ const MenuUpdate = ({
           .map((c) => c.trim())
           .filter(Boolean),
         isAvailable: values.isAvailable,
+        image: values.image || undefined,
       });
 
       toast.success("Menu updated successfully 🎉", {
@@ -130,7 +130,7 @@ const MenuUpdate = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-lg">
+      <DialogContent className="max-w-lg max-h-[80%] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Update Menu</DialogTitle>
         </DialogHeader>
@@ -211,6 +211,25 @@ const MenuUpdate = ({
             {errors.category?.message && (
               <p className="text-sm text-red-500">
                 {String(errors.category.message)}
+              </p>
+            )}
+          </div>
+
+          {/* Image */}
+          <div>
+            <label className="block text-sm font-medium mb-1">Image URL</label>
+            <Input
+              placeholder="https://example.com/menu.jpg"
+              {...register("image", {
+                validate: (value) =>
+                  !value ||
+                  imageUrlRegex.test(value) ||
+                  "Please enter a valid image URL",
+              })}
+            />
+            {errors.image?.message && (
+              <p className="text-sm text-red-500 mt-1">
+                {String(errors.image.message)}
               </p>
             )}
           </div>
