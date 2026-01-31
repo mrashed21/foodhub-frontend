@@ -36,7 +36,7 @@ const Testimonials = () => {
             className="w-full"
           >
             <CarouselContent>
-              {/* 🔄 Loading Skeleton */}
+              {/*  Skeleton */}
               {isLoading &&
                 Array.from({ length: 3 }).map((_, i) => (
                   <CarouselItem key={i} className="md:basis-1/2 lg:basis-1/3">
@@ -51,7 +51,7 @@ const Testimonials = () => {
                   </CarouselItem>
                 ))}
 
-              {/* ✅ Real Reviews */}
+              {/* Reviews */}
               {!isLoading &&
                 data?.data?.map((review: any) => (
                   <CarouselItem

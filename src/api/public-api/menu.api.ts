@@ -9,7 +9,11 @@ export interface MenuInterface {
   providerId: string;
   provider: {
     id: string;
-    name: string;
+    user: {
+      id: string;
+      name: string;
+      providerName: string;
+    };
   };
 
   name: string;
@@ -26,6 +30,18 @@ export interface MenuInterface {
   cuisine: string[];
 
   isAvailable: boolean;
+
+  reviews?: {
+    id: string;
+    rating: number;
+    comment: string;
+    createdAt: string;
+    user: {
+      id: string;
+      name: string;
+      image?: string | null;
+    };
+  }[];
 
   createdAt: string;
   updatedAt: string;

@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/table";
 import { formatDate } from "@/hook/date-format";
 import { Edit, Trash2 } from "lucide-react";
+import Image from "next/image";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -67,6 +68,7 @@ const MenuTable = ({
         <TableHeader>
           <TableRow>
             <TableHead className="w-12 pl-5">S.N</TableHead>
+            <TableHead>Image</TableHead>
             <TableHead>Name</TableHead>
             <TableHead>Category</TableHead>
             <TableHead>Price</TableHead>
@@ -84,6 +86,17 @@ const MenuTable = ({
               <TableCell className="pl-5">{serialNumber(index)}</TableCell>
 
               {/* Name */}
+              <TableCell className="font-medium">
+                <Image
+                  src={
+                    menu.image ||
+                    "https://i.ibb.co.com/N8PpMRr/Chat-GPT-Image-Feb-1-2026-01-49-03-AM-1.png"
+                  }
+                  alt={menu?.name}
+                  width={200}
+                  height={80}
+                />
+              </TableCell>
               <TableCell className="font-medium">{menu.name}</TableCell>
 
               {/* Category */}
@@ -115,9 +128,7 @@ const MenuTable = ({
               </TableCell>
 
               {/* Created */}
-              <TableCell>
-                {formatDate(menu.createdAt)}
-              </TableCell>
+              <TableCell>{formatDate(menu.createdAt)}</TableCell>
 
               {/* Actions */}
               <TableCell className="flex gap-2 justify-end">

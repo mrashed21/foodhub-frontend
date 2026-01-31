@@ -5,7 +5,7 @@ const Container = ({
   className?: string;
 }>) => {
   return (
-    <main className={`max-w-400 mx-auto ${className}`}>{children}</main>
+    <main className={`max-w-400 mx-auto px-5 ${className}`}>{children}</main>
   )
 }
 

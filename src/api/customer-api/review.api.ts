@@ -88,11 +88,24 @@ const getReviewForHomeApi = async () => {
   const { data } = await api.get("/review/home");
   return data;
 };
-//!get CUSTOMER – MY ORDERS
 
 export const useReviewForHome = () => {
   return useQuery({
     queryKey: ["review/home"],
     queryFn: () => getReviewForHomeApi(),
+  });
+};
+
+// !get review for user
+
+const getReviewForUserApi = async () => {
+  const { data } = await api.get("/review/user");
+  return data;
+};
+
+export const useReviewForUser = () => {
+  return useQuery({
+    queryKey: ["review/home"],
+    queryFn: () => getReviewForUserApi(),
   });
 };

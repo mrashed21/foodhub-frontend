@@ -31,6 +31,7 @@ interface MenuCreateFormValues {
   category: CategoryOption | null;
   cuisine: string;
   isAvailable: boolean;
+  image: string;
 }
 
 const MenuCreate = ({
@@ -40,6 +41,8 @@ const MenuCreate = ({
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }) => {
+  const imageUrlRegex = /^(https?:\/\/).+\.(jpg|jpeg|png|webp|gif|svg)$/i;
+
   const {
     register,
     handleSubmit,
@@ -54,6 +57,7 @@ const MenuCreate = ({
       category: null,
       cuisine: "",
       isAvailable: true,
+      image: "",
     },
   });
 
@@ -91,6 +95,7 @@ const MenuCreate = ({
           .map((c) => c.trim())
           .filter(Boolean),
         isAvailable: values.isAvailable,
+        image: values.image || null,
       });
 
       toast.success("Menu created successfully 🎉", {
@@ -108,7 +113,7 @@ const MenuCreate = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-lg">
+      <DialogContent className="max-w-lg max-h-[80%] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Create Menu</DialogTitle>
         </DialogHeader>
@@ -191,6 +196,27 @@ const MenuCreate = ({
             {errors.category?.message && (
               <p className="text-sm text-red-500 mt-1">
                 {String(errors.category.message)}
+              </p>
+            )}
+          </div>
+
+          {/* Image URL (optional) */}
+          <div>
+            <label className="block text-sm font-medium mb-1">Image URL </label>
+
+            <Input
+              placeholder="https://example.com/menu.jpg"
+              {...register("image", {
+                required: "Image URL is required",
+                validate: (value) =>
+                  imageUrlRegex.test(value) ||
+                  "Please enter a valid image URL (jpg, png, webp, etc.)",
+              })}
+            />
+
+            {errors.image?.message && (
+              <p className="text-sm text-red-500 mt-1">
+                {String(errors.image.message)}
               </p>
             )}
           </div>

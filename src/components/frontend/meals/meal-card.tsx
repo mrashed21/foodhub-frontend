@@ -14,6 +14,7 @@ import {
   isInCart,
   removeFromCart,
 } from "@/lib/cart";
+import Image from "next/image";
 
 const MealCard = ({ meal }: { meal: MenuInterface }) => {
   const [inCart, setInCart] = useState(false);
@@ -41,11 +42,25 @@ const MealCard = ({ meal }: { meal: MenuInterface }) => {
 
   return (
     <div className="rounded-xl border bg-background overflow-hidden hover:shadow transition">
-      <div className="h-40 bg-muted" />
+      {/* Image */}
+      <div className="relative h-40 w-full bg-muted">
+        <Image
+          src={
+            meal.image ||
+            "https://i.ibb.co.com/N8PpMRr/Chat-GPT-Image-Feb-1-2026-01-49-03-AM-1.png"
+          }
+          alt={meal.name}
+          fill
+          className="object-cover"
+          sizes="(max-width: 768px) 100vw, 33vw"
+          priority={false}
+        />
+      </div>
 
       <div className="p-4 space-y-3">
         <h3 className="font-semibold line-clamp-1">{meal.name}</h3>
 
+        {/* Badges */}
         <div className="flex flex-wrap gap-1">
           {meal.category?.name && (
             <Badge variant="outline" className="text-primary border-primary/40">
