@@ -1,6 +1,7 @@
 "use client";
 
 import { useUpdateOrderStatus } from "@/api/customer-api/order.api";
+
 import TableSkeleton from "@/components/custom/table-skeleton";
 import { useState } from "react";
 
@@ -26,9 +27,11 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 
+import { useCreateReview } from "@/api/customer-api/review.api";
+import StarRating from "@/components/custom/star-rating";
+import { formatDate } from "@/hook/date-format";
 import Link from "next/link";
 import { toast } from "sonner";
-import { formatDate } from "@/hook/date-format";
 
 type OrderStatus = "placed" | "preparing" | "cancelled" | "ready" | "delivered";
 
@@ -73,9 +76,15 @@ const statusStyle: Record<OrderStatus, string> = {
 
 const MyOrderTable = ({ orders, isLoading, serialNumber }: Props) => {
   const { mutate: updateOrderStatus, isPending } = useUpdateOrderStatus();
+  const { mutate: createReview, isPending: reviewLoading } = useCreateReview();
 
-  const [open, setOpen] = useState(false);
-  const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
+  const [openCancel, setOpenCancel] = useState(false);
+  const [openReview, setOpenReview] = useState(false);
+
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+
+  const [rating, setRating] = useState(5);
+  const [comment, setComment] = useState("");
 
   if (isLoading) {
     return <TableSkeleton rows={10} columns={8} />;
@@ -89,39 +98,77 @@ const MyOrderTable = ({ orders, isLoading, serialNumber }: Props) => {
     );
   }
 
-  const handleCancelClick = (orderId: string) => {
-    setSelectedOrderId(orderId);
-    setOpen(true);
+  /* ---------------- Cancel Order ---------------- */
+  const handleCancelClick = (order: Order) => {
+    setSelectedOrder(order);
+    setOpenCancel(true);
   };
 
   const confirmCancel = () => {
-    if (!selectedOrderId) return;
+    if (!selectedOrder) return;
 
-    toast.loading("Cancelling order...", {
-      id: "cancel-order",
-    });
+    toast.loading("Cancelling order...", { id: "cancel" });
 
     updateOrderStatus(
-      {
-        id: selectedOrderId,
-        status: "cancelled",
-      },
+      { id: selectedOrder.id, status: "cancelled" },
       {
         onSuccess: () => {
           toast.success("Order cancelled successfully", {
-            id: "cancel-order",
+            id: "cancel",
           });
-
-          setOpen(false);
-          setSelectedOrderId(null);
+          setOpenCancel(false);
+          setSelectedOrder(null);
         },
-
         onError: (error: any) => {
           toast.error(
             error?.response?.data?.message || "Failed to cancel order",
-            {
-              id: "cancel-order",
-            },
+            { id: "cancel" },
+          );
+        },
+      },
+    );
+  };
+
+  /* ---------------- Review ---------------- */
+  const handleOpenReview = (order: Order) => {
+    setSelectedOrder(order);
+    setOpenReview(true);
+  };
+
+  const handleSubmitReview = () => {
+    if (!selectedOrder) return;
+
+    // ⚠️ minimal change: first menuId used
+    const menuId = selectedOrder.orderItems[0]?.menu.id;
+
+    if (!menuId) {
+      toast.error("Menu not found for this order");
+      return;
+    }
+
+    toast.loading("Submitting review...", { id: "review" });
+
+    createReview(
+      {
+        orderId: selectedOrder.id,
+        menuId,
+        rating,
+        comment,
+      },
+      {
+        onSuccess: () => {
+          toast.success("Review submitted successfully", {
+            id: "review",
+          });
+          setOpenReview(false);
+          setRating(5);
+          setComment("");
+          setSelectedOrder(null);
+        },
+        onError: (error: any) => {
+          toast.error(
+            error?.response?.data?.message || "Failed to submit review",
+            { id: "review" },
           );
         },
       },
@@ -130,18 +177,35 @@ const MyOrderTable = ({ orders, isLoading, serialNumber }: Props) => {
 
   return (
     <>
+      {/* ---------------- TABLE ---------------- */}
       <div className="rounded-md border">
-        <Table className="min-w-350 table-fixed">
+        <Table className="min-w-175 border-separate border-spacing-y-1">
           <TableHeader>
-            <TableRow>
-              <TableHead className="w-15 pl-5">S.N</TableHead>
-              <TableHead>Order ID</TableHead>
-              <TableHead>Restaurant</TableHead>
-              <TableHead>Items</TableHead>
-              <TableHead>Date</TableHead>
-              <TableHead>Total</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="text-end pr-10">Action</TableHead>
+            <TableRow className="bg-muted/40">
+              <TableHead className="w-12 pl-4 text-xs font-medium text-muted-foreground">
+                #
+              </TableHead>
+              <TableHead className="text-xs font-medium text-muted-foreground">
+                Order ID
+              </TableHead>
+              <TableHead className="text-xs font-medium text-muted-foreground">
+                Restaurant
+              </TableHead>
+              <TableHead className="w-14 text-center text-xs font-medium text-muted-foreground">
+                Items
+              </TableHead>
+              <TableHead className="w-28 text-xs font-medium text-muted-foreground">
+                Date
+              </TableHead>
+              <TableHead className="w-28 text-right text-xs font-medium text-muted-foreground">
+                Total
+              </TableHead>
+              <TableHead className="w-24 text-xs font-medium text-muted-foreground">
+                Status
+              </TableHead>
+              <TableHead className="w-40 text-right pr-4 text-xs font-medium text-muted-foreground">
+                Action
+              </TableHead>
             </TableRow>
           </TableHeader>
 
@@ -150,42 +214,83 @@ const MyOrderTable = ({ orders, isLoading, serialNumber }: Props) => {
               const canCancel =
                 order.status === "placed" || order.status === "preparing";
 
-              return (
-                <TableRow key={order.id}>
-                  <TableCell className="pl-5">{serialNumber(index)}</TableCell>
+              const canReview = order.status === "delivered";
 
+              return (
+                <TableRow
+                  key={order.id}
+                  className="bg-background hover:bg-muted/30"
+                >
+                  {/* S.N */}
+                  <TableCell className="pl-4 text-sm text-muted-foreground">
+                    {serialNumber(index)}
+                  </TableCell>
+
+                  {/* Order ID */}
                   <TableCell className="font-mono text-xs">
                     {order.invoice}
                   </TableCell>
 
-                  <TableCell>{order.provider?.user?.providerName}</TableCell>
+                  {/* Restaurant */}
+                  <TableCell className="text-sm">
+                    {order.provider?.user?.providerName}
+                  </TableCell>
 
-                  <TableCell>{order.orderItems.length}</TableCell>
+                  {/* Items */}
+                  <TableCell className="text-center text-sm">
+                    {order.orderItems.length}
+                  </TableCell>
 
-                  <TableCell>
+                  {/* Date */}
+                  <TableCell className="text-sm text-muted-foreground">
                     {formatDate(order.createdAt)}
                   </TableCell>
 
-                  <TableCell>৳ {order.totalAmount}</TableCell>
+                  {/* Total */}
+                  <TableCell className="text-right text-sm font-medium">
+                    ৳ {order.totalAmount}
+                  </TableCell>
 
+                  {/* Status */}
                   <TableCell>
-                    <Badge className={statusStyle[order.status]}>
+                    <Badge
+                      variant="outline"
+                      className={statusStyle[order.status]}
+                    >
                       {order.status.toUpperCase()}
                     </Badge>
                   </TableCell>
 
-                  <TableCell className="flex gap-2 justify-end">
-                    <Button asChild variant="outline">
-                      <Link href={`/order-details/${order.id}`}>Details</Link>
-                    </Button>
+                  {/* Action */}
+                  <TableCell className="pr-4 text-right">
+                    <div className="inline-flex items-center gap-1">
+                      {/* Details */}
+                      <Button asChild size="sm" variant="outline">
+                        <Link href={`/order-details/${order.id}`}>Details</Link>
+                      </Button>
 
-                    <Button
-                      variant="destructive"
-                      disabled={!canCancel || isPending}
-                      onClick={() => handleCancelClick(order.id)}
-                    >
-                      Cancel
-                    </Button>
+                      {/* Review */}
+                      {canReview && (
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => handleOpenReview(order)}
+                        >
+                          Review
+                        </Button>
+                      )}
+
+                      {/* Cancel */}
+                      <Button
+                        size="sm"
+                        variant="destructive"
+                        disabled={!canCancel || isPending}
+                        onClick={() => handleCancelClick(order)}
+                        className="px-2"
+                      >
+                        Cancel
+                      </Button>
+                    </div>
                   </TableCell>
                 </TableRow>
               );
@@ -194,14 +299,13 @@ const MyOrderTable = ({ orders, isLoading, serialNumber }: Props) => {
         </Table>
       </div>
 
-      {/* Cancel Confirmation Modal */}
-      <AlertDialog open={open} onOpenChange={setOpen}>
+      {/* ---------------- CANCEL MODAL ---------------- */}
+      <AlertDialog open={openCancel} onOpenChange={setOpenCancel}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Cancel this order?</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. Once cancelled, the order will not
-              be processed further.
+              This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
 
@@ -209,10 +313,56 @@ const MyOrderTable = ({ orders, isLoading, serialNumber }: Props) => {
             <AlertDialogCancel disabled={isPending}>No</AlertDialogCancel>
             <AlertDialogAction
               onClick={confirmCancel}
-              className="bg-destructive text-white hover:bg-destructive/90"
+              className="bg-destructive text-white"
               disabled={isPending}
             >
               Yes, Cancel Order
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* ---------------- REVIEW MODAL ---------------- */}
+      <AlertDialog open={openReview} onOpenChange={setOpenReview}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Write a Review</AlertDialogTitle>
+            <AlertDialogDescription>
+              Share your experience
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+
+          <div className="space-y-4 py-3">
+            {/* ⭐ Star Rating */}
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Rating</label>
+
+              <StarRating
+                value={rating}
+                onChange={setRating}
+                disabled={reviewLoading}
+              />
+            </div>
+
+            {/* 💬 Comment */}
+            <textarea
+              className="w-full rounded-md border p-2 text-sm"
+              placeholder="Write your review (optional)"
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+              disabled={reviewLoading}
+            />
+          </div>
+
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={reviewLoading}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleSubmitReview}
+              disabled={reviewLoading}
+            >
+              Submit Review
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
