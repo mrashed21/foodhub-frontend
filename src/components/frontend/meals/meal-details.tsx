@@ -17,11 +17,13 @@ import {
   removeFromCart,
 } from "@/lib/cart";
 import Image from "next/image";
+import Link from "next/link";
 
 const MealDetails = ({ id }: { id: string }) => {
   const { data, isLoading } = useMenuById(id);
   const meal: MenuInterface | undefined = data?.data;
 
+  console.log(meal);
   const [inCart, setInCart] = useState(false);
 
   const syncCartState = () => {
@@ -114,13 +116,17 @@ const MealDetails = ({ id }: { id: string }) => {
           {/* Provider Info */}
           {meal.provider?.user && (
             <div className="mt-6 rounded-xl border bg-muted/40 p-4">
-              <p className="text-sm text-muted-foreground mb-1">Provided by</p>
-              <h3 className="text-lg font-medium">
-                {meal.provider.user.providerName}
-              </h3>
-              <p className="text-sm text-muted-foreground">
-                Owner: {meal.provider.user.name}
-              </p>
+              <Link href={`/providers/${meal.provider?.id}`}>
+                <p className="text-sm text-muted-foreground mb-1">
+                  Provided by
+                </p>
+                <h3 className="text-lg font-medium">
+                  {meal.provider.user.providerName}
+                </h3>
+                <p className="text-sm text-muted-foreground">
+                  Owner: {meal.provider.user.name}
+                </p>
+              </Link>
             </div>
           )}
 
