@@ -1,125 +1,123 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Field,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { env } from "@/env";
+import { authClient } from "@/lib/auth-client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Eye, EyeOff } from "lucide-react";
-import Link from "next/link";
-import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { toast } from "sonner";
+import * as z from "zod";
 
-const loginSchema = z.object({
-  email: z.string().email("Invalid email"),
-  password: z.string().min(1, "Password is required"),
+/* ---------------- schema ---------------- */
+const formSchema = z.object({
+  email: z.string().email("Invalid email address"),
+  password: z.string().min(8, "Minimum length is 8"),
 });
 
-type LoginFormValues = z.infer<typeof loginSchema>;
+type LoginFormValues = z.infer<typeof formSchema>;
 
-const Login = () => {
-  const [showPassword, setShowPassword] = useState(false);
-
+export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<LoginFormValues>({
-    resolver: zodResolver(loginSchema),
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
   });
 
-  const onSubmit = (data: LoginFormValues) => {
-    /**
-     * ✅ THIS IS THE ONLY CORRECT WAY
-     * - POST
-     * - HTML form submit
-     * - Correct better-auth endpoint
-     * - Correct encoding
-     */
+ 
 
-    const form = document.createElement("form");
-    form.method = "POST";
-    form.action = `${env.NEXT_PUBLIC_AUTH_URL}/sign-in/email`;
-    form.enctype = "application/x-www-form-urlencoded";
+  const onSubmit = async (values: LoginFormValues) => {
+    const toastId = toast.loading("Logging in");
 
-    const emailInput = document.createElement("input");
-    emailInput.type = "hidden";
-    emailInput.name = "email";
-    emailInput.value = data.email;
+    try {
+      const { data, error } = await authClient.signIn.email(values);
 
-    const passwordInput = document.createElement("input");
-    passwordInput.type = "hidden";
-    passwordInput.name = "password";
-    passwordInput.value = data.password;
+      if (error) {
+        toast.error(error.message, { id: toastId });
+        return;
+      }
 
-    form.appendChild(emailInput);
-    form.appendChild(passwordInput);
-
-    document.body.appendChild(form);
-    form.submit();
+      if (data) {
+        toast.success("User Logged in Successfully", { id: toastId });
+        window.location.href = "/dashboard";
+      }
+    } catch {
+      toast.error("Something went wrong, please try again.", { id: toastId });
+    }
   };
 
   return (
-    <div className="w-full max-w-md rounded-xl border bg-background p-6 shadow-sm">
-      <div className="mb-6 text-center">
-        <h1 className="text-2xl font-semibold">Welcome back</h1>
-      </div>
+    <Card {...props}>
+      <CardHeader>
+        <CardTitle>Login</CardTitle>
+        <CardDescription>
+          Enter your credentials to access your account
+        </CardDescription>
+      </CardHeader>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        {/* Email */}
-        <div className="space-y-1">
-          <Label>Email</Label>
-          <Input
-            type="email"
-            placeholder="rashedjaman768@gmail.com"
-            {...register("email")}
-          />
-          {errors.email && (
-            <p className="text-sm text-destructive">{errors.email.message}</p>
-          )}
-        </div>
+      <CardContent>
+        <form id="login-form" onSubmit={handleSubmit(onSubmit)}>
+          <FieldGroup>
+            {/* Email */}
+            <Field>
+              <FieldLabel htmlFor="email">Email</FieldLabel>
+              <Input
+                id="email"
+                type="email"
+                {...register("email")}
+              />
+              {/* {errors.email && (
+                <FieldError errors={[errors.email.message ?? ""]} />
+              )} */}
+            </Field>
 
-        {/* Password */}
-        <div className="space-y-1">
-          <Label>Password</Label>
+            {/* Password */}
+            <Field>
+              <FieldLabel htmlFor="password">Password</FieldLabel>
+              <Input
+                id="password"
+                type="password"
+                {...register("password")}
+              />
+              {/* {errors.password && (
+                <FieldError errors={[errors.password.message ?? ""]} />
+              )} */}
+            </Field>
+          </FieldGroup>
+        </form>
+      </CardContent>
 
-          <div className="relative">
-            <Input
-              type={showPassword ? "text" : "password"}
-              placeholder="********"
-              {...register("password")}
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword((p) => !p)}
-              className="absolute right-3 top-2.5 text-muted-foreground"
-            >
-              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-            </button>
-          </div>
-
-          {errors.password && (
-            <p className="text-sm text-destructive">
-              {errors.password.message}
-            </p>
-          )}
-        </div>
-
-        <Button type="submit" className="w-full" disabled={isSubmitting}>
-          {isSubmitting ? "Logging in..." : "Login"}
+      <CardFooter className="flex flex-col gap-5">
+        <Button
+          form="login-form"
+          type="submit"
+          className="w-full"
+          disabled={isSubmitting}
+        >
+          Login
         </Button>
-      </form>
 
-      <p className="mt-4 text-center text-sm">
-        Don&apos;t have an account?
-        <Link href="/auth/register" className="font-medium underline">
-          {" "}
-          Register
-        </Link>
-      </p>
-    </div>
+       
+      </CardFooter>
+    </Card>
   );
-};
-
-export default Login;
+}
