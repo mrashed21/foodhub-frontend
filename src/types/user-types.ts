@@ -12,11 +12,29 @@ export interface User {
   updatedAt: Date;
 }
 
+// export interface SessionUser {
+//   id: string;
+//   name: string;
+//   email: string;
+//   emailVerified: boolean;
+//   image?: string | null;
+//   role?: "customer" | "provider" | "admin";
+// }
+
+export type UserRole = "admin" | "customer" | "provider";
+
 export interface SessionUser {
   id: string;
   name: string;
   email: string;
-  emailVerified: boolean;
+  emailVerified?: boolean;
   image?: string | null;
-  role?: "customer" | "provider" | "admin";
+
+  phone?: string | null;
+  providerName?: string | null;
+  role?: UserRole;
+  status?: "activate" | "suspend";
+
+  createdAt?: Date;
+  updatedAt?: Date;
 }

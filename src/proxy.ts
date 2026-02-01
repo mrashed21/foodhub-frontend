@@ -8,7 +8,7 @@ const ROLE_BASE_ROUTE: Record<string, string> = {
   [Roles.admin]: "/admin",
 };
 
-const AUTH_ONLY_ROUTES = ["/checkout"];
+const AUTH_ONLY_ROUTES = ["/checkout", "cart", "profile"];
 
 const isRouteAllowedForRole = (role: string, pathname: string): boolean => {
   const baseRoute = ROLE_BASE_ROUTE[role];
@@ -49,6 +49,8 @@ export async function proxy(request: NextRequest) {
 export const config = {
   matcher: [
     "/checkout",
+    "/cart",
+    "/profile",
     "/user",
     "/user/:path*",
     "/vendor",

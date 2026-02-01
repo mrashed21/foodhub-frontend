@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { clearCart, getCart } from "@/lib/cart";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { toast } from "sonner";
 
 const Checkout = () => {
@@ -15,13 +15,17 @@ const Checkout = () => {
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
 
+  const cart = getCart();
+
+  const subtotal = useMemo(() => {
+    return cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  }, [cart]);
+
   const placeOrder = async () => {
     if (!phone || !address) {
       toast.error("Phone and address are required");
       return;
     }
-
-    const cart = getCart();
 
     if (!cart.length) {
       toast.error("Cart is empty");
@@ -30,9 +34,9 @@ const Checkout = () => {
 
     const items = cart.map((item) => ({
       menuId: item.id,
-      providerId: item.provider.id ,
+      providerId: item.provider.id,
       quantity: item.quantity,
-      price: item.price
+      price: item.price,
     }));
 
     try {
@@ -51,22 +55,65 @@ const Checkout = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto py-10 space-y-5">
-      <h2 className="text-2xl font-semibold">Checkout</h2>
+    <div className="max-w-2xl mx-auto py-10 space-y-8">
+      <h2 className="text-3xl font-bold">Checkout</h2>
 
-      <Input
-        placeholder="Delivery address"
-        value={address}
-        onChange={(e) => setAddress(e.target.value)}
-      />
+      {/* ===== Delivery Details ===== */}
+      <div className="border rounded-xl p-6 space-y-4">
+        <h3 className="text-lg font-semibold">Delivery Information</h3>
 
-      <Input
-        placeholder="Phone number"
-        value={phone}
-        onChange={(e) => setPhone(e.target.value)}
-      />
+        <Input
+          placeholder="Delivery address"
+          value={address}
+          onChange={(e) => setAddress(e.target.value)}
+        />
 
-      <Button className="w-full" disabled={isPending} onClick={placeOrder}>
+        <Input
+          placeholder="Phone number"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+        />
+
+        <p className="text-sm text-muted-foreground">
+          Payment method: <strong>Cash on Delivery</strong>
+        </p>
+      </div>
+
+      {/* ===== Order Summary ===== */}
+      <div className="border rounded-xl p-6 space-y-4">
+        <h3 className="text-lg font-semibold">Order Summary</h3>
+
+        {cart.length === 0 ? (
+          <p className="text-sm text-muted-foreground">Your cart is empty</p>
+        ) : (
+          <div className="space-y-3">
+            {cart.map((item) => (
+              <div key={item.id} className="flex justify-between text-sm">
+                <div>
+                  <p className="font-medium">{item.name}</p>
+                  <p className="text-muted-foreground">Qty: {item.quantity}</p>
+                </div>
+
+                <span className="font-medium">
+                  ৳{item.price * item.quantity}
+                </span>
+              </div>
+            ))}
+
+            <div className="border-t pt-3 flex justify-between font-semibold">
+              <span>Subtotal</span>
+              <span>৳{subtotal}</span>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* ===== Action ===== */}
+      <Button
+        className="w-full h-12 text-base"
+        disabled={isPending || cart.length === 0}
+        onClick={placeOrder}
+      >
         {isPending ? "Placing Order..." : "Confirm Order"}
       </Button>
     </div>

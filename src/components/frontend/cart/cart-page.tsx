@@ -19,6 +19,7 @@ import {
   removeFromCart,
 } from "@/lib/cart";
 import { Minus, Plus, Trash2 } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -86,7 +87,17 @@ const CartPage = () => {
                   {/* Meal */}
                   <TableCell>
                     <div className="flex items-center gap-3">
-                      <div className="h-12 w-12 rounded-md bg-muted" />
+                      <div className="h-12 w-12 rounded-md bg-muted">
+                        <Image
+                          src={
+                            item.image ||
+                            "https://i.ibb.co.com/N8PpMRr/Chat-GPT-Image-Feb-1-2026-01-49-03-AM-1.png"
+                          }
+                          alt={item.name}
+                          width={100}
+                          height={100}
+                        />
+                      </div>
                       <div>
                         <p className="font-medium">{item.name}</p>
                         <p className="text-xs text-muted-foreground line-clamp-1">
