@@ -38,7 +38,7 @@ const Login = () => {
 
     const form = document.createElement("form");
     form.method = "POST";
-    form.action = `${env.NEXT_PUBLIC_AUTH_URL}/api/auth/sign-in/email`;
+    form.action = `${env.NEXT_PUBLIC_AUTH_URL}/sign-in/email`;
 
     const emailInput = document.createElement("input");
     emailInput.type = "hidden";
