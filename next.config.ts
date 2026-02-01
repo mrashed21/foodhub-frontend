@@ -10,7 +10,7 @@ const nextConfig: NextConfig = {
     return [
       {
         source: "/api/auth/:path*",
-        destination: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/:path*`,
+        destination: "https://foodhub-backend-pearl.vercel.app/api/auth/:path*",
       },
     ];
   },
