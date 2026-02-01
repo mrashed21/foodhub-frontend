@@ -1,8 +1,6 @@
-import type { NextConfig } from "next";
-import "./src/env";
+import { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
   images: {
     unoptimized: true,
   },
@@ -11,6 +9,10 @@ const nextConfig: NextConfig = {
       {
         source: "/api/auth/:path*",
         destination: "https://foodhub-backend-pearl.vercel.app/api/auth/:path*",
+      },
+      {
+        source: "/api/v1/:path*",
+        destination: "https://foodhub-backend-pearl.vercel.app/api/v1/:path*",
       },
     ];
   },
