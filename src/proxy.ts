@@ -1,6 +1,6 @@
-import { Roles } from "@/hook/role";
-import { userService } from "@/service/user.service";
 import { NextRequest, NextResponse } from "next/server";
+import { Roles } from "./hook/role";
+import { userService } from "./service/user.service";
 
 const ROLE_BASE_ROUTE: Record<string, string> = {
   [Roles.customer]: "/user",
