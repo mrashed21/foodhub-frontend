@@ -7,10 +7,8 @@ import { env } from "@/env";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { toast } from "sonner";
 import { z } from "zod";
 
 const loginSchema = z.object({
@@ -22,7 +20,6 @@ type LoginFormValues = z.infer<typeof loginSchema>;
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const router = useRouter();
 
   const {
     register,
@@ -32,40 +29,14 @@ const Login = () => {
     resolver: zodResolver(loginSchema),
   });
 
-  const onSubmit = async (data: LoginFormValues) => {
-    try {
-      const res = await fetch(`${env.NEXT_PUBLIC_AUTH_URL}/sign-in/email`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify(data),
-      });
+  const onSubmit = (data: LoginFormValues) => {
+    // 🔥 REDIRECT-BASED LOGIN (THIS CREATES REAL SESSION)
+    const url =
+      `${env.NEXT_PUBLIC_AUTH_URL}/api/auth/sign-in/email` +
+      `?email=${encodeURIComponent(data.email)}` +
+      `&password=${encodeURIComponent(data.password)}`;
 
-      const result = await res.json();
-      if (!res.ok) {
-        toast.error(result?.message || "Login failed");
-        return;
-      }
-
-      if (result.status === "verification_required") {
-        toast.warning("Please verify your email before logging in.");
-        return;
-      }
-
-      toast.success("Login successful");
-      router.refresh();
-      if (result?.user?.role === "customer") {
-        router.push("/");
-      }
-      if (result?.user?.role === "provider") {
-        router.push("/vendor");
-      }
-      if (result?.user?.role === "admin") {
-        router.push("/admin");
-      }
-    } catch (error) {
-      toast.error("Something went wrong");
-    }
+    window.location.href = url;
   };
 
   return (
@@ -84,7 +55,9 @@ const Login = () => {
             {...register("email")}
           />
           {errors.email && (
-            <p className="text-sm text-destructive">{errors.email.message}</p>
+            <p className="text-sm text-destructive">
+              {errors.email.message}
+            </p>
           )}
         </div>
 
@@ -118,6 +91,7 @@ const Login = () => {
           {isSubmitting ? "Logging in..." : "Login"}
         </Button>
       </form>
+
       <p className="mt-4 text-center text-sm">
         Don&apos;t have an account?
         <Link href="/auth/register" className="font-medium underline">
