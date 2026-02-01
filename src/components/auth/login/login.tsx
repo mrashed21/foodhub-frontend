@@ -45,7 +45,7 @@ const Login = () => {
 
       if (data) {
         toast.success("User Logged in Successfully", { id: toastId });
-        window.location.href = "/user";
+        window.location.href = "/";
       }
     } catch {
       toast.error("Something went wrong, please try again.", { id: toastId });
