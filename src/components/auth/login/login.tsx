@@ -42,52 +42,27 @@ const Login = () => {
         toast.error(error.message, { id: toastId });
         return;
       }
+      // window.location.href = "/";
 
-      console.log(data);
       if (data) {
         toast.success("User Logged in Successfully", { id: toastId });
-        // window.location.href = "/";
+
+        const user = data.user as typeof data.user & { role: string };
+
+        if (user.role === "customer") {
+          window.location.href = "/user";
+        } else if (user.role === "provider") {
+          window.location.href = "/vendor";
+        } else if (user.role === "admin") {
+          window.location.href = "/admin";
+        } else {
+          window.location.href = "/";
+        }
       }
     } catch {
       toast.error("Something went wrong, please try again.", { id: toastId });
     }
   };
-
-  // const onSubmit = async (data: LoginFormValues) => {
-  //   try {
-  //     const res = await fetch(`${env.NEXT_PUBLIC_AUTH_URL}/sign-in/email`, {
-  //       method: "POST",
-  //       headers: { "Content-Type": "application/json" },
-  //       credentials: "include",
-  //       body: JSON.stringify(data),
-  //     });
-
-  //     const result = await res.json();
-  //     if (!res.ok) {
-  //       toast.error(result?.message || "Login failed");
-  //       return;
-  //     }
-
-  //     if (result.status === "verification_required") {
-  //       toast.warning("Please verify your email before logging in.");
-  //       return;
-  //     }
-
-  //     toast.success("Login successful");
-  //     router.refresh();
-  //     if (result?.user?.role === "customer") {
-  //       router.push("/");
-  //     }
-  //     if (result?.user?.role === "provider") {
-  //       router.push("/vendor");
-  //     }
-  //     if (result?.user?.role === "admin") {
-  //       router.push("/admin");
-  //     }
-  //   } catch (error) {
-  //     toast.error("Something went wrong");
-  //   }
-  // };
 
   return (
     <div className="w-full max-w-md rounded-xl border bg-background p-6 shadow-sm">
