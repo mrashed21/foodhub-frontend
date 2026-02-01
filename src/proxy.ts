@@ -59,6 +59,7 @@
 //     "/admin/:path*",
 //   ],
 // };
+
 import { NextRequest, NextResponse } from "next/server";
 import { Roles } from "./hook/role";
 import { userService } from "./service/user.service";
@@ -75,11 +76,13 @@ const AUTH_ONLY_ROUTES = ["/checkout", "/cart", "/profile"];
 // Public routes (no auth needed)
 const PUBLIC_ROUTES = [
   "/",
-  "/auth/login",
-  "/auth/register",
   "/menu",
   "/about",
   "/contact",
+  "/auth/login",
+  "/auth/register",
+  "/auth/verify-email",
+  "/auth/forgot-password",
 ];
 
 const isRouteAllowedForRole = (role: string, pathname: string): boolean => {
@@ -89,55 +92,65 @@ const isRouteAllowedForRole = (role: string, pathname: string): boolean => {
   return pathname === baseRoute || pathname.startsWith(`${baseRoute}/`);
 };
 
-// ✅ Function name changed to "proxy"
 export async function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
-  const origin = request.nextUrl.origin;
 
-  // Skip proxy for static files and API routes
+  // ⏭️ Skip proxy for:
+  // - API routes (your rewrites)
+  // - Static files
+  // - Next.js internals
   if (
-    pathname.startsWith("/_next") ||
     pathname.startsWith("/api") ||
+    pathname.startsWith("/_next") ||
+    pathname.startsWith("/static") ||
     pathname.includes(".")
   ) {
     return NextResponse.next();
   }
 
-  // Allow public routes without auth check
-  if (PUBLIC_ROUTES.includes(pathname)) {
+  // ✅ Allow public routes without authentication
+  if (
+    PUBLIC_ROUTES.some(
+      (route) => pathname === route || pathname.startsWith(route),
+    )
+  ) {
     return NextResponse.next();
   }
 
-  // Get user session
+  // 🔐 Get user session
   const { data, error } = await userService.getSession();
+  const isAuthenticated = !error && data?.user;
+  const role = data?.user?.role;
 
-  // ❌ Not logged in → redirect to login
-  if (error || !data?.user) {
-    // If already on auth page, allow
-    if (pathname.startsWith("/auth")) {
-      return NextResponse.next();
-    }
-
-    return NextResponse.redirect(new URL("/auth/login", origin));
+  // ❌ Not authenticated → redirect to login
+  if (!isAuthenticated) {
+    const loginUrl = new URL("/auth/login", request.url);
+    loginUrl.searchParams.set("redirect", pathname); // Save where they wanted to go
+    return NextResponse.redirect(loginUrl);
   }
 
-  const role = data.user.role;
-
-  // ✅ If on auth page but logged in → redirect to role-based dashboard
+  // ✅ Authenticated but on auth pages → redirect to dashboard
   if (pathname.startsWith("/auth")) {
-    const redirectPath = ROLE_BASE_ROUTE[role] ?? "/";
-    return NextResponse.redirect(new URL(redirectPath, origin));
+    const dashboardPath = ROLE_BASE_ROUTE[role!] ?? "/";
+    return NextResponse.redirect(new URL(dashboardPath, request.url));
   }
 
-  // ✅ Auth-only routes (checkout, cart, profile) - any logged-in user can access
+  // ✅ Auth-only routes (any authenticated user can access)
   if (AUTH_ONLY_ROUTES.some((route) => pathname.startsWith(route))) {
     return NextResponse.next();
   }
 
-  // 🔒 Role-based protection for /user, /vendor, /admin routes
-  if (!isRouteAllowedForRole(role, pathname)) {
-    const redirectPath = ROLE_BASE_ROUTE[role] ?? "/";
-    return NextResponse.redirect(new URL(redirectPath, origin));
+  // 🔒 Role-based routes (/user, /vendor, /admin)
+  const isRoleBasedRoute = Object.values(ROLE_BASE_ROUTE).some((route) =>
+    pathname.startsWith(route),
+  );
+
+  if (isRoleBasedRoute) {
+    if (!isRouteAllowedForRole(role!, pathname)) {
+      // User trying to access wrong role route → redirect to their dashboard
+      const correctDashboard = ROLE_BASE_ROUTE[role!] ?? "/";
+      return NextResponse.redirect(new URL(correctDashboard, request.url));
+    }
   }
 
   // ✅ All checks passed
@@ -147,12 +160,11 @@ export async function proxy(request: NextRequest) {
 export const config = {
   matcher: [
     /*
-     * Match all request paths except:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * - Files with extensions (images, etc)
+     * Match all paths except:
+     * - API routes (/api/*)
+     * - Static files (/_next/static, /_next/image)
+     * - Favicon and other public files
      */
-    "/((?!_next/static|_next/image|favicon.ico|.*\\..*).*)",
+    "/((?!api|_next/static|_next/image|favicon.ico|.*\\..*).*)",
   ],
 };
