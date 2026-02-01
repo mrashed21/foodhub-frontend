@@ -31,14 +31,17 @@ const Login = () => {
 
   const onSubmit = (data: LoginFormValues) => {
     /**
-     * 🔥 IMPORTANT:
-     * better-auth requires POST (not GET)
-     * Redirect-based login must use HTML form submit
+     * ✅ THIS IS THE ONLY CORRECT WAY
+     * - POST
+     * - HTML form submit
+     * - Correct better-auth endpoint
+     * - Correct encoding
      */
 
     const form = document.createElement("form");
     form.method = "POST";
     form.action = `${env.NEXT_PUBLIC_AUTH_URL}/sign-in/email`;
+    form.enctype = "application/x-www-form-urlencoded";
 
     const emailInput = document.createElement("input");
     emailInput.type = "hidden";
