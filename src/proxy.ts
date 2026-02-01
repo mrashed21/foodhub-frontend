@@ -59,7 +59,6 @@
 //     "/admin/:path*",
 //   ],
 // };
-
 import { NextRequest, NextResponse } from "next/server";
 import { Roles } from "./hook/role";
 import { userService } from "./service/user.service";
@@ -90,11 +89,12 @@ const isRouteAllowedForRole = (role: string, pathname: string): boolean => {
   return pathname === baseRoute || pathname.startsWith(`${baseRoute}/`);
 };
 
-export async function middleware(request: NextRequest) {
+// ✅ Function name changed to "proxy"
+export async function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
   const origin = request.nextUrl.origin;
 
-  // Skip middleware for static files and API routes
+  // Skip proxy for static files and API routes
   if (
     pathname.startsWith("/_next") ||
     pathname.startsWith("/api") ||
