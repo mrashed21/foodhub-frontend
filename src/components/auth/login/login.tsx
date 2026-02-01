@@ -37,7 +37,7 @@ const Login = () => {
       const res = await fetch(`${env.NEXT_PUBLIC_AUTH_URL}/sign-in/email`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        credentials: "include",
+        // credentials: "include",
         body: JSON.stringify(data),
       });
 
