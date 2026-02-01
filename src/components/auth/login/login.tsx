@@ -31,10 +31,13 @@ const Login = () => {
 
   const onSubmit = (data: LoginFormValues) => {
     // 🔥 REDIRECT-BASED LOGIN (THIS CREATES REAL SESSION)
-    const url =
-      `${env.NEXT_PUBLIC_AUTH_URL}/api/auth/sign-in/email` +
-      `?email=${encodeURIComponent(data.email)}` +
-      `&password=${encodeURIComponent(data.password)}`;
+   const url =
+  `${env.NEXT_PUBLIC_AUTH_URL}/sign-in/email` +
+  `?email=${encodeURIComponent(data.email)}` +
+  `&password=${encodeURIComponent(data.password)}`;
+
+window.location.href = url;
+
 
     window.location.href = url;
   };
