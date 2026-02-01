@@ -1,4 +1,3 @@
-import { env } from "@/env";
 import { cookies } from "next/headers";
 
 export const userService = {
@@ -6,7 +5,14 @@ export const userService = {
     try {
       const cookieStore = await cookies();
 
-      const res = await fetch(`${env.NEXT_PUBLIC_APP_URL}${env.AUTH_URL}`, {
+      // Server-side এ same-domain URL use করতে হবে
+      const baseUrl =
+        process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+      const url = `${baseUrl}/api/auth/get-session`;
+
+      console.log("Fetching session from:", url); // Debug
+
+      const res = await fetch(url, {
         headers: {
           Cookie: cookieStore.toString(),
         },
@@ -15,15 +21,16 @@ export const userService = {
 
       const session = await res.json();
 
+      console.log("Session response:", session); // Debug
+
       if (session === null) {
         return { data: null, error: { message: "Session is missing." } };
       }
 
       return { data: session, error: null };
     } catch (err) {
-      console.error(err);
+      console.error("Session fetch error:", err);
       return { data: null, error: { message: "Something Went Wrong" } };
     }
   },
 };
-
