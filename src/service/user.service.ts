@@ -5,7 +5,6 @@ export const userService = {
     try {
       const cookieStore = await cookies();
 
-      // Server-side এ same-domain URL use করতে হবে
       const baseUrl =
         process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
       const url = `${baseUrl}/api/auth/get-session`;
@@ -21,7 +20,6 @@ export const userService = {
 
       const session = await res.json();
 
-      console.log("Session response:", session); // Debug
 
       if (session === null) {
         return { data: null, error: { message: "Session is missing." } };

@@ -43,6 +43,7 @@ const Login = () => {
         return;
       }
 
+      console.log(data);
       if (data) {
         toast.success("User Logged in Successfully", { id: toastId });
         window.location.href = "/";
