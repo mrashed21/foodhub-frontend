@@ -30,16 +30,31 @@ const Login = () => {
   });
 
   const onSubmit = (data: LoginFormValues) => {
-    // 🔥 REDIRECT-BASED LOGIN (THIS CREATES REAL SESSION)
-   const url =
-  `${env.NEXT_PUBLIC_AUTH_URL}/sign-in/email` +
-  `?email=${encodeURIComponent(data.email)}` +
-  `&password=${encodeURIComponent(data.password)}`;
+    /**
+     * 🔥 IMPORTANT:
+     * better-auth requires POST (not GET)
+     * Redirect-based login must use HTML form submit
+     */
 
-window.location.href = url;
+    const form = document.createElement("form");
+    form.method = "POST";
+    form.action = `${env.NEXT_PUBLIC_AUTH_URL}/api/auth/sign-in/email`;
 
+    const emailInput = document.createElement("input");
+    emailInput.type = "hidden";
+    emailInput.name = "email";
+    emailInput.value = data.email;
 
-    window.location.href = url;
+    const passwordInput = document.createElement("input");
+    passwordInput.type = "hidden";
+    passwordInput.name = "password";
+    passwordInput.value = data.password;
+
+    form.appendChild(emailInput);
+    form.appendChild(passwordInput);
+
+    document.body.appendChild(form);
+    form.submit();
   };
 
   return (
@@ -58,9 +73,7 @@ window.location.href = url;
             {...register("email")}
           />
           {errors.email && (
-            <p className="text-sm text-destructive">
-              {errors.email.message}
-            </p>
+            <p className="text-sm text-destructive">{errors.email.message}</p>
           )}
         </div>
 
