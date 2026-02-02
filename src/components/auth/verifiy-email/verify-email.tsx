@@ -1,7 +1,5 @@
-
 "use client";
 
-import { env } from "@/env";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { toast } from "sonner";
@@ -20,11 +18,11 @@ const VerifyEmail = () => {
 
       try {
         const res = await fetch(
-          `${env.NEXT_PUBLIC_AUTH_URL}/verify-email?token=${token}`,
+          `https://foodhub-backend-pearl.vercel.app/api/auth/verify-email?token=${token}`,
           {
             method: "GET",
             credentials: "include",
-          }
+          },
         );
 
         if (!res.ok) {

@@ -16,7 +16,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-import { env } from "@/env";
 import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
@@ -87,12 +86,15 @@ const Register = () => {
 
   const onSubmit = async (data: RegisterFormValues) => {
     try {
-      const res = await fetch(`${env.NEXT_PUBLIC_AUTH_URL}/sign-up/email`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify(data),
-      });
+      const res = await fetch(
+        `https://foodhub-backend-pearl.vercel.app/api/auth/sign-up/email`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify(data),
+        },
+      );
 
       const result = await res.json();
 
@@ -128,7 +130,7 @@ const Register = () => {
 
     try {
       const res = await fetch(
-        `${env.NEXT_PUBLIC_AUTH_URL}/send-verification-email`,
+        `https://foodhub-backend-pearl.vercel.app/api/auth/send-verification-email`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

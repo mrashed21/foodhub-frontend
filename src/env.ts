@@ -4,25 +4,25 @@ import * as z from "zod";
 export const env = createEnv({
   server: {
     BASE_URL: z.string().min(1),
-    AUTH_URL: z.string().url(), 
+    AUTH_URL: z.string().url(),
     BACKEND_URL: z.string().url(),
   },
 
   client: {
     NEXT_PUBLIC_APP_URL: z.string().url(),
-    NEXT_PUBLIC_AUTH_URL: z.string().min(1), 
+    NEXT_PUBLIC_AUTH_URL: z.string().min(1),
     NEXT_PUBLIC_BACKEND_URL: z.string().url(),
     NEXT_PUBLIC_BASE_URL: z.string().min(1),
   },
 
   runtimeEnv: {
-    BASE_URL: process.env.BASE_URL,
-    AUTH_URL: process.env.AUTH_URL,
-    BACKEND_URL: process.env.BACKEND_URL,
+    BASE_URL: "https://foodhub-backend-pearl.vercel.app/api/v1",
+    AUTH_URL: "https://foodhub-backend-pearl.vercel.app/api/auth",
+    BACKEND_URL: "https://foodhub-backend-pearl.vercel.app",
 
-    NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
-    NEXT_PUBLIC_AUTH_URL: process.env.NEXT_PUBLIC_AUTH_URL,
-    NEXT_PUBLIC_BACKEND_URL: process.env.NEXT_PUBLIC_BACKEND_URL,
-    NEXT_PUBLIC_BASE_URL: process.env.NEXT_PUBLIC_BASE_URL,
+    NEXT_PUBLIC_APP_URL: "http://localhost:3000",
+    NEXT_PUBLIC_AUTH_URL: "https://foodhub-backend-pearl.vercel.app/api/auth",
+    NEXT_PUBLIC_BACKEND_URL: "https://foodhub-backend-pearl.vercel.app",
+    NEXT_PUBLIC_BASE_URL: "https://foodhub-backend-pearl.vercel.app/api/v1",
   },
 });
