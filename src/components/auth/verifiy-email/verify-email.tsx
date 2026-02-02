@@ -18,7 +18,7 @@ const VerifyEmail = () => {
 
       try {
         const res = await fetch(
-          `https://foodhub-backend-pearl.vercel.app/api/auth/verify-email?token=${token}`,
+          `https://backend-foodhub-mrashed21.vercel.app/api/auth/verify-email?token=${token}`,
           {
             method: "GET",
             credentials: "include",

@@ -87,7 +87,7 @@ const Register = () => {
   const onSubmit = async (data: RegisterFormValues) => {
     try {
       const res = await fetch(
-        `https://foodhub-backend-pearl.vercel.app/api/auth/sign-up/email`,
+        `https://backend-foodhub-mrashed21.vercel.app/api/auth/sign-up/email`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -130,7 +130,7 @@ const Register = () => {
 
     try {
       const res = await fetch(
-        `https://foodhub-backend-pearl.vercel.app/api/auth/send-verification-email`,
+        `https://backend-foodhub-mrashed21.vercel.app/api/auth/send-verification-email`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

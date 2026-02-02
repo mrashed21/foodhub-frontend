@@ -50,7 +50,7 @@ const Login = () => {
         const user = data.user as typeof data.user & { role: string };
 
         if (user.role === "customer") {
-          window.location.href = "/user";
+          window.location.href = "/user/orders";
         } else if (user.role === "provider") {
           window.location.href = "/vendor";
         } else if (user.role === "admin") {

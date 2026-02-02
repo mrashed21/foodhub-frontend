@@ -16,13 +16,13 @@ export const env = createEnv({
   },
 
   runtimeEnv: {
-    BASE_URL: "https://foodhub-backend-pearl.vercel.app/api/v1",
-    AUTH_URL: "https://foodhub-backend-pearl.vercel.app/api/auth",
-    BACKEND_URL: "https://foodhub-backend-pearl.vercel.app",
+    BASE_URL: "https://backend-foodhub-mrashed21.vercel.app/api/v1",
+    AUTH_URL: "https://backend-foodhub-mrashed21.vercel.app/api/auth",
+    BACKEND_URL: "https://backend-foodhub-mrashed21.vercel.app",
 
-    NEXT_PUBLIC_APP_URL: "http://localhost:3000",
-    NEXT_PUBLIC_AUTH_URL: "https://foodhub-backend-pearl.vercel.app/api/auth",
-    NEXT_PUBLIC_BACKEND_URL: "https://foodhub-backend-pearl.vercel.app",
-    NEXT_PUBLIC_BASE_URL: "https://foodhub-backend-pearl.vercel.app/api/v1",
+    NEXT_PUBLIC_APP_URL: "https://frontend-foodhub-mrashed21.vercel.app",
+    NEXT_PUBLIC_AUTH_URL: "https://backend-foodhub-mrashed21.vercel.app/api/auth",
+    NEXT_PUBLIC_BACKEND_URL: "https://backend-foodhub-mrashed21.vercel.app",
+    NEXT_PUBLIC_BASE_URL: "https://backend-foodhub-mrashed21.vercel.app/api/v1",
   },
 });

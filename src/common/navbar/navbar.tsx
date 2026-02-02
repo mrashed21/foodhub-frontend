@@ -28,7 +28,7 @@ const navItems = [
 const getDashboardRoute = (role: User["role"]) => {
   switch (role) {
     case "customer":
-      return "/user";
+      return "/user/orders";
     case "provider":
       return "/vendor";
     case "admin":

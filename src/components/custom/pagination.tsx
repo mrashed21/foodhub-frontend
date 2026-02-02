@@ -8,6 +8,7 @@ interface PaginationProps {
   setLimit: (limit: number) => void;
   limitOptions?: number[];
 }
+// https://backend-foodhub-mrashed21.vercel.app
 
 const Pagination = ({
   page,
@@ -94,7 +95,7 @@ const Pagination = ({
         >
           {limitOptions.map((l) => (
             <option key={l} value={l}>
-              {l} 
+              {l}
             </option>
           ))}
         </select>
