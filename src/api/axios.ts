@@ -1,8 +1,7 @@
-import { env } from "@/env";
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: env.NEXT_PUBLIC_BASE_URL,
+  baseURL: "https://foodhub-backend-pearl.vercel.app/api/v1",
   withCredentials: true,
 });
 
