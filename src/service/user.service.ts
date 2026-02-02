@@ -3,23 +3,24 @@ import { cookies } from "next/headers";
 export const userService = {
   getSession: async function () {
     try {
-      const cookieStore = await cookies();
+      // Read cookies from the incoming request (server-side)
+      const cookieStore = cookies();
 
-      const baseUrl =
-        process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
-      const url = `${baseUrl}/api/auth/get-session`;
-
-      console.log("Fetching session from:", url); // Debug
+      // 🔒 HARD-CODED FRONTEND ORIGIN (proxy will forward to backend)
+      const url =
+        "https://frontend-foodhub-mrashed21.vercel.app/api/auth/get-session";
 
       const res = await fetch(url, {
+        method: "GET",
         headers: {
+          // Forward all cookies to the API route
           Cookie: cookieStore.toString(),
         },
         cache: "no-store",
+        credentials: "include",
       });
 
       const session = await res.json();
-
 
       if (session === null) {
         return { data: null, error: { message: "Session is missing." } };
@@ -28,7 +29,7 @@ export const userService = {
       return { data: session, error: null };
     } catch (err) {
       console.error("Session fetch error:", err);
-      return { data: null, error: { message: "Something Went Wrong" } };
+      return { data: null, error: { message: "Something went wrong" } };
     }
   },
 };
