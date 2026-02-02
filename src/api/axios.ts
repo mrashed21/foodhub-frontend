@@ -25,9 +25,12 @@ const api = axios.create({
 // 🔑 REQUEST INTERCEPTOR (IMPORTANT)
 api.interceptors.request.use(async (config) => {
   // frontend server route
-  const res = await fetch("/api/auth/get-session", {
-    credentials: "include",
-  });
+  const res = await fetch(
+    "https://foodhub-backend-pearl.vercel.app/api/auth/get-session",
+    {
+      credentials: "include",
+    },
+  );
 
   if (res.ok) {
     const data = await res.json();
