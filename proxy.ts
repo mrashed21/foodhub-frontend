@@ -89,14 +89,12 @@ import { Roles } from "@/hook/role";
 import { userService } from "@/service/user.service";
 import { NextRequest, NextResponse } from "next/server";
 
-// 🔹 Role → Dashboard mapping (আগের route অনুযায়ী)
 const ROLE_BASE_ROUTE: Record<string, string> = {
   [Roles.customer]: "/dashboard",
   [Roles.provider]: "/dashboard",
   [Roles.admin]: "/admin-dashboard",
 };
 
-// 🔹 Role-based route check
 const isRouteAllowedForRole = (role: string, pathname: string): boolean => {
   const baseRoute = ROLE_BASE_ROUTE[role];
   if (!baseRoute) return false;
@@ -107,12 +105,10 @@ const isRouteAllowedForRole = (role: string, pathname: string): boolean => {
 export async function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
-  // 🔹 Skip verify email
   if (pathname.startsWith("/verify-email")) {
     return NextResponse.next();
   }
 
-  // 🔹 Static / internal skip
   if (
     pathname.startsWith("/api") ||
     pathname.startsWith("/_next") ||
@@ -121,14 +117,12 @@ export async function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // 🔹 Cookie-based quick auth check (old logic preserved)
   const sessionToken = request.cookies.get("better-auth.session_token");
 
   if (!sessionToken) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
-  // 🔹 Get user + role (new logic)
   const { data, error } = await userService.getSession();
   const user = data?.user;
   const role = user?.role;
@@ -137,7 +131,6 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
-  // 🔹 If user tries wrong dashboard
   const isRoleBasedRoute = Object.values(ROLE_BASE_ROUTE).some((route) =>
     pathname.startsWith(route),
   );
