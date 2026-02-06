@@ -1,23 +1,43 @@
 "use client";
-import { useUsers } from "@/api/admin-api/user/user.api";
+import { BASE_URL } from "@/api/base-url";
 import Header from "@/components/custom/header";
 import { SearchField } from "@/components/custom/search-field";
 import useSerialNumber from "@/hook/use-serial";
-import { useState } from "react";
-import UserTable from "../user-table/user-table";
+import { useEffect, useState } from "react";
 
 const Admin = () => {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const [search, setSearch] = useState("");
 
-  //! get admin
-  const { data: users, isLoading } = useUsers({
-    page,
-    limit,
-    search,
-    role: "admin",
-  });
+  // lets fetch dara with useefect normal fetch and check if it works send token in header from cookie
+  useEffect(() => {
+    const fetchUsers = async () => {
+      const response = await fetch(
+        `${BASE_URL}/user?role=admin&page=${page}&limit=${limit}&search=${search}`,
+        {
+          method: "GET",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        },
+      );
+
+      const data = await response.json();
+      console.log(data);
+    };
+
+    fetchUsers();
+  }, [page, limit, search]);
+
+  // //! get admin
+  // const { data: users, isLoading } = useUsers({
+  //   page,
+  //   limit,
+  //   search,
+  //   role: "admin",
+  // });
 
   // *dynamic serial with page, limit
   const serialNumber = useSerialNumber(page, limit);
@@ -46,11 +66,11 @@ const Admin = () => {
         />
       </div>
 
-      <UserTable
+      {/* <UserTable
         users={users?.data?.data}
         serialNumber={serialNumber}
         isLoading={isLoading}
-      />
+      /> */}
     </section>
   );
 };
