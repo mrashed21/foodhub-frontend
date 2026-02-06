@@ -71,13 +71,11 @@ const CategoryUpdate = ({
 
     try {
       await mutateAsync({
-        payload: {
-          id: editData.id,
-          name: data.name,
-          slug: slugify(data.name),
-          isActive: data.isActive,
-          categoryImage: data.categoryImage || undefined,
-        },
+        id: editData.id,
+        name: data.name,
+        slug: slugify(data.name),
+        isActive: data.isActive,
+        categoryImage: data.categoryImage || undefined,
       });
 
       toast.success("Category updated successfully");

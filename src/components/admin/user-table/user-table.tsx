@@ -58,10 +58,8 @@ const UserTable = ({
 
     try {
       await updateUserStatus({
-        payload: {
-          id: activeUser.id,
-          status: activeUser.action,
-        },
+        id: activeUser.id,
+        status: activeUser.action,
       });
 
       toast.success(
