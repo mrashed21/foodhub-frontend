@@ -1,3 +1,4 @@
+// src/app/api/admin/stats/route.ts
 import { cookies } from "next/headers";
 
 export async function GET() {
@@ -9,7 +10,7 @@ export async function GET() {
       headers: {
         Cookie: cookieStore.toString(),
       },
-    },
+    }
   );
 
   const data = await res.json();
