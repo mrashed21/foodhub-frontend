@@ -1,48 +1,28 @@
-import { cookies } from "next/headers";
+"use client";
 
-async function getAdminStats() {
-  try {
-    const cookieStore = cookies();
+import { useEffect, useState } from "react";
 
-    const res = await fetch(
-      "https://backend-foodhub-mrashed21.vercel.app/api/v1/stats/admin",
-      {
-        headers: {
-          Cookie: cookieStore.toString(),
-        },
-        cache: "no-store",
-      },
-    );
+export default function AdminStats() {
+  const [stats, setStats] = useState<any>(null);
+  const [error, setError] = useState(false);
 
-    if (!res.ok) {
-      console.error("Backend error status:", res.status);
-      return null;
-    }
+  useEffect(() => {
+    fetch("/api/admin/stats")
+      .then((res) => res.json())
+      .then((json) => {
+        if (!json.success) throw new Error();
+        setStats(json.data);
+      })
+      .catch(() => setError(true));
+  }, []);
 
-    const json = await res.json();
-    return json;
-  } catch (error) {
-    console.error("Fetch failed:", error);
-    return null;
-  }
-}
-
-export default async function AdminStats() {
-  const response = await getAdminStats();
-
-  // 🔴 VERY IMPORTANT: null guard
-  if (!response || !response.success) {
-    return <div className="text-red-500">Failed to load admin stats</div>;
-  }
-
-  const stats = response.data;
+  if (error) return <p>Failed to load admin stats</p>;
+  if (!stats) return <p>Loading...</p>;
 
   return (
-    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-      <div>{stats.totalUsers}</div>
-      <div>{stats.totalProviders}</div>
-      <div>{stats.totalCustomers}</div>
-      <div>{stats.totalOrders}</div>
+    <div>
+      <p>Total Users: {stats.totalUsers}</p>
+      <p>Total Orders: {stats.totalOrders}</p>
     </div>
   );
 }
