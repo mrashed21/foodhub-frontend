@@ -1,53 +1,48 @@
 import { cookies } from "next/headers";
 
 async function getAdminStats() {
-  const cookieStore = cookies();
+  try {
+    const cookieStore = cookies();
 
-  const res = await fetch(
-    "https://backend-foodhub-mrashed21.vercel.app/api/v1/stats/admin",
-    {
-      headers: {
-        Cookie: cookieStore.toString(),
+    const res = await fetch(
+      "https://backend-foodhub-mrashed21.vercel.app/api/v1/stats/admin",
+      {
+        headers: {
+          Cookie: cookieStore.toString(),
+        },
+        cache: "no-store",
       },
-      cache: "no-store",
-    },
-  );
+    );
 
-  if (!res.ok) {
-    throw new Error("Failed to fetch admin stats");
+    if (!res.ok) {
+      console.error("Backend error status:", res.status);
+      return null;
+    }
+
+    const json = await res.json();
+    return json;
+  } catch (error) {
+    console.error("Fetch failed:", error);
+    return null;
   }
-
-  return res.json();
 }
 
 export default async function AdminStats() {
   const response = await getAdminStats();
 
-  // ✅ IMPORTANT: backend structure অনুযায়ী
-  const stats = response.data;
+  // 🔴 VERY IMPORTANT: null guard
+  if (!response || !response.success) {
+    return <div className="text-red-500">Failed to load admin stats</div>;
+  }
 
-  const statCards = [
-    { title: "Total Users", value: stats.totalUsers },
-    { title: "Total Providers", value: stats.totalProviders },
-    { title: "Total Customers", value: stats.totalCustomers },
-    { title: "Total Orders", value: stats.totalOrders },
-    { title: "Pending Orders", value: stats.totalPendingOrders },
-    { title: "Completed Orders", value: stats.totalCompletedOrders },
-    { title: "Cancelled Orders", value: stats.totalCancelledOrders },
-    { title: "Delivered Orders", value: stats.totalDeliveredOrders },
-    { title: "Total Menus", value: stats.totalMenus },
-    { title: "Total Categories", value: stats.totalCategories },
-    { title: "Total Reviews", value: stats.totalReviews },
-  ];
+  const stats = response.data;
 
   return (
     <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-      {statCards.map((item) => (
-        <div key={item.title} className="border rounded p-4">
-          <p className="text-sm text-gray-500">{item.title}</p>
-          <p className="text-2xl font-bold">{item.value}</p>
-        </div>
-      ))}
+      <div>{stats.totalUsers}</div>
+      <div>{stats.totalProviders}</div>
+      <div>{stats.totalCustomers}</div>
+      <div>{stats.totalOrders}</div>
     </div>
   );
 }
