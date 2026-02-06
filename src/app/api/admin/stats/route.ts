@@ -1,14 +1,14 @@
-// src/app/api/admin/stats/route.ts
-import { cookies } from "next/headers";
+import { NextRequest } from "next/server";
 
-export async function GET() {
-  const cookieStore = cookies();
-
+export async function GET(req: NextRequest) {
   const res = await fetch(
     "https://backend-foodhub-mrashed21.vercel.app/api/v1/stats/admin",
     {
       headers: {
-        Cookie: cookieStore.toString(),
+        // 🔥 forward EVERYTHING
+        cookie: req.headers.get("cookie") ?? "",
+        origin: req.headers.get("origin") ?? "",
+        "user-agent": req.headers.get("user-agent") ?? "",
       },
     }
   );
