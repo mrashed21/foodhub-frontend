@@ -1,7 +1,7 @@
-import api from "@/api/axios";
 import { useQuery } from "@tanstack/react-query";
 
-//! TYPES
+/* ================= PROVIDER STATS ================= */
+
 export interface ProviderStats {
   totalOrders: number;
   totalPendingOrders: number;
@@ -11,13 +11,12 @@ export interface ProviderStats {
   totalMenus: number;
 }
 
-//* GET Provider Stats API
 const getProviderStatsApi = async () => {
-  const { data } = await api.get("/stats/provider");
-  return data;
+  const res = await fetch("/api/provider/stats");
+  if (!res.ok) throw new Error("Failed to fetch provider stats");
+  return res.json();
 };
 
-//* Provider Stats Hook
 export const useProviderStats = () => {
   return useQuery({
     queryKey: ["provider-stats"],
@@ -25,7 +24,8 @@ export const useProviderStats = () => {
   });
 };
 
-//! TYPES
+/* ================= ADMIN STATS ================= */
+
 export interface AdminStats {
   totalUsers: number;
   totalProviders: number;
@@ -40,13 +40,12 @@ export interface AdminStats {
   totalReviews: number;
 }
 
-//* GET Admin Stats API
 const getAdminStatsApi = async () => {
-  const { data } = await api.get("/stats/admin");
-  return data;
+  const res = await fetch("/api/admin/stats");
+  if (!res.ok) throw new Error("Failed to fetch admin stats");
+  return res.json();
 };
 
-//* Admin Stats Hook
 export const useAdminStats = () => {
   return useQuery({
     queryKey: ["admin-stats"],

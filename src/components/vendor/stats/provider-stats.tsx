@@ -1,6 +1,6 @@
 "use client";
 
-import { useProviderStats } from "@/api/stats.api";
+import { useProviderStats } from "@/api/admin-api/stats/stats.api";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 

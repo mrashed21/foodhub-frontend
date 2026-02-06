@@ -1,9 +1,8 @@
 "use client";
 
-import { useAdminStats } from "@/api/stats.api";
+import { useAdminStats } from "@/api/admin-api/stats/stats.api";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useEffect } from "react";
 
 const StatsSkeleton = () => {
   return (
@@ -24,15 +23,6 @@ const StatsSkeleton = () => {
 
 const AdminStats = () => {
   const { data, isLoading, isError } = useAdminStats();
-
-  useEffect(() => {
-    fetch("https://backend-foodhub-mrashed21.vercel.app/api/v1/stats/admin", {
-      credentials: "include",
-    })
-      .then((res) => res.json())
-      .then((data) => console.log("TEST DATA:", data))
-      .catch(console.error);
-  }, []);
 
   if (isLoading) {
     return <StatsSkeleton />;
