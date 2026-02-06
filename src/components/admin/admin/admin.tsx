@@ -3,6 +3,7 @@ import { BASE_URL } from "@/api/base-url";
 import Header from "@/components/custom/header";
 import { SearchField } from "@/components/custom/search-field";
 import useSerialNumber from "@/hook/use-serial";
+import { authClient } from "@/lib/auth-client";
 import { useEffect, useState } from "react";
 
 const Admin = () => {
@@ -10,26 +11,32 @@ const Admin = () => {
   const [limit, setLimit] = useState(10);
   const [search, setSearch] = useState("");
 
-  // lets fetch dara with useefect normal fetch and check if it works send token in header from cookie
+  const { data: session } = authClient.useSession(); // ✅ session চেক করুন
+
   useEffect(() => {
     const fetchUsers = async () => {
       const response = await fetch(
         `${BASE_URL}/user?role=admin&page=${page}&limit=${limit}&search=${search}`,
         {
           method: "GET",
-          credentials: "include",
+          credentials: "include", // ✅ এটা আছে
           headers: {
             "Content-Type": "application/json",
+            // যদি token localStorage এ থাকে তাহলে:
+            // "Authorization": `Bearer ${token}`
           },
         },
       );
 
       const data = await response.json();
-      console.log(data);
+      console.log("all user: ", data);
     };
 
-    fetchUsers();
-  }, [page, limit, search]);
+    if (session) {
+      // ✅ session থাকলে তবেই fetch করুন
+      fetchUsers();
+    }
+  }, [page, limit, search, session]);
 
   // //! get admin
   // const { data: users, isLoading } = useUsers({
