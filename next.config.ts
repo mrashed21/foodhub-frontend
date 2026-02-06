@@ -8,15 +8,15 @@ const nextConfig: NextConfig = {
   async rewrites() {
     return [
       {
-        source: "/api/auth/:path*",
+        source: "/api/:path*",
         destination:
-          "https://backend-foodhub-mrashed21.vercel.app/api/auth/:path*",
+          "https://backend-foodhub-mrashed21.vercel.app/api/:path*",
       },
-      {
-        source: "/api/v1/:path*",
-        destination:
-          "https://backend-foodhub-mrashed21.vercel.app/api/v1/:path*",
-      },
+      // {
+      //   source: "/api/v1/:path*",
+      //   destination:
+      //     "https://backend-foodhub-mrashed21.vercel.app/api/v1/:path*",
+      // },
     ];
   },
 };
