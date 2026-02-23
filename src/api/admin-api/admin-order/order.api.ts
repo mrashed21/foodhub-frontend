@@ -1,6 +1,5 @@
+import api from "@/api/axios";
 import { useQuery } from "@tanstack/react-query";
-
-/* ================= TYPES ================= */
 
 export type OrderStatus =
   | "placed"
@@ -39,7 +38,7 @@ export interface AdminOrder {
   }[];
 }
 
-export interface AdminOrdersResponse {
+interface AdminOrdersResponse {
   data: AdminOrder[];
   pagination: {
     page: number;
@@ -57,43 +56,17 @@ export interface GetAdminOrdersParams {
   provider?: string;
 }
 
-/* ================= API CALL (PROXY) ================= */
-
 const getAdminOrdersApi = async (
   params: GetAdminOrdersParams,
 ): Promise<AdminOrdersResponse> => {
-  // query string build
-  const query = new URLSearchParams(
-    Object.entries(params).reduce(
-      (acc, [key, value]) => {
-        if (value !== undefined && value !== "") {
-          acc[key] = String(value);
-        }
-        return acc;
-      },
-      {} as Record<string, string>,
-    ),
-  ).toString();
+  const { data } = await api.get("/order/admin", {
+    params,
+  });
 
-  // 🔥 PROXY CALL (cookie + headers auto handled)
-  const res = await fetch(`/api/proxy/order/admin?${query}`);
-
-  if (!res.ok) {
-    throw new Error("Failed to fetch admin orders");
-  }
-
-  const json = await res.json();
-
-  // backend response structure অনুযায়ী
-  // {
-  //   success: true,
-  //   data: { data: [...], pagination: {...} }
-  // }
-  return json.data;
+  return data.data;
 };
 
-/* ================= REACT QUERY HOOK ================= */
-
+//! React Query Hook
 export const useAdminOrders = (params: GetAdminOrdersParams) => {
   const { page, limit, search, status, provider } = params;
 

@@ -27,7 +27,6 @@ const AllOrders = () => {
 
   const [userId, setUserId] = useState<string | undefined>();
 
-  console.log(userId);
   //   order data
   const { data, isLoading } = useAdminOrders({
     page,
@@ -56,8 +55,6 @@ const AllOrders = () => {
       value: item.providerId,
     })) || [];
 
-  console.log(usersOptions);
-  console.log(users);
   return (
     <section className="space-y-6 w-full">
       {/* Header */}

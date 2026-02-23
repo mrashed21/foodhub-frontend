@@ -23,7 +23,6 @@ const MealDetails = ({ id }: { id: string }) => {
   const { data, isLoading } = useMenuById(id);
   const meal: MenuInterface | undefined = data?.data;
 
-  console.log(meal);
   const [inCart, setInCart] = useState(false);
 
   const syncCartState = () => {

@@ -22,7 +22,6 @@ const Admin = () => {
     role: "admin",
   });
 
-  console.log("user data (admin): ", users)
   // *dynamic serial with page, limit
   const serialNumber = useSerialNumber(page, limit);
 
