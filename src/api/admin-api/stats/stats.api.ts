@@ -1,3 +1,4 @@
+import api from "@/api/axios";
 import { useQuery } from "@tanstack/react-query";
 
 /* ================= PROVIDER STATS ================= */
@@ -12,9 +13,8 @@ export interface ProviderStats {
 }
 
 const getProviderStatsApi = async () => {
-  const res = await fetch("/api/v1/provider/stats");
-  if (!res.ok) throw new Error("Failed to fetch provider stats");
-  return res.json();
+  const { data } = await api.get("/provider/stats");
+  return data;
 };
 
 export const useProviderStats = () => {
@@ -41,9 +41,8 @@ export interface AdminStats {
 }
 
 const getAdminStatsApi = async () => {
-  const res = await fetch("/api/v1/admin/stats");
-  if (!res.ok) throw new Error("Failed to fetch admin stats");
-  return res.json();
+  const { data } = await api.get("/admin/stats");
+  return data;
 };
 
 export const useAdminStats = () => {
