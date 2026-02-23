@@ -42,23 +42,20 @@ const Login = () => {
         toast.error(error.message, { id: toastId });
         return;
       }
-      // window.location.href = "/";
+      
+      if (data) {
+        const user = data.user as typeof data.user & { role: string };
 
-      // if (data) {
-      //   toast.success("User Logged in Successfully", { id: toastId });
-
-      //   const user = data.user as typeof data.user & { role: string };
-
-      //   if (user.role === "customer") {
-      //     window.location.href = "/user/orders";
-      //   } else if (user.role === "provider") {
-      //     window.location.href = "/vendor";
-      //   } else if (user.role === "admin") {
-      //     window.location.href = "/admin";
-      //   } else {
-      //     window.location.href = "/";
-      //   }
-      // }
+        if (user.role === "customer") {
+          router.push("/user/orders");
+        } else if (user.role === "provider") {
+          router.push("/vendor");
+        } else if (user.role === "admin") {
+          router.push("/admin");
+        } else {
+          router.push("/");
+        }
+      }
     } catch {
       toast.error("Something went wrong, please try again.", { id: toastId });
     }

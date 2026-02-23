@@ -1,35 +1,24 @@
-import { env } from "@/env";
-import { cookies } from "next/headers";
-
-const AUTH_URL = env.AUTH_URL;
-
 export const userService = {
   getSession: async function () {
     try {
-      const cookieStore = await cookies();
+      const res = await fetch(`/api/auth/get-session`, {
+        credentials: "include",
+        cache: "no-store",
+      });
 
-      console.log(cookieStore.toString());
-
-      const res = await fetch(
-        `https://backend-foodhub-mrashed21.vercel.app/api/auth/get-session`,
-        {
-          headers: {
-            Cookie: cookieStore.toString(),
-          },
-          cache: "no-store",
-        },
-      );
+      if (!res.ok) {
+        return { data: null, error: { message: "Unauthorized" } };
+      }
 
       const session = await res.json();
 
-      if (session === null) {
-        return { data: null, error: { message: "Session is missing." } };
+      if (!session?.user) {
+        return { data: null, error: { message: "Session missing" } };
       }
 
       return { data: session, error: null };
     } catch (err) {
-      console.error(err);
-      return { data: null, error: { message: "Something Went Wrong" } };
+      return { data: null, error: { message: "Something went wrong" } };
     }
   },
 };
