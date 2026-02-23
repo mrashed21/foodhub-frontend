@@ -44,21 +44,21 @@ const Login = () => {
       }
       // window.location.href = "/";
 
-      if (data) {
-        toast.success("User Logged in Successfully", { id: toastId });
+      // if (data) {
+      //   toast.success("User Logged in Successfully", { id: toastId });
 
-        const user = data.user as typeof data.user & { role: string };
+      //   const user = data.user as typeof data.user & { role: string };
 
-        if (user.role === "customer") {
-          window.location.href = "/user/orders";
-        } else if (user.role === "provider") {
-          window.location.href = "/vendor";
-        } else if (user.role === "admin") {
-          window.location.href = "/admin";
-        } else {
-          window.location.href = "/";
-        }
-      }
+      //   if (user.role === "customer") {
+      //     window.location.href = "/user/orders";
+      //   } else if (user.role === "provider") {
+      //     window.location.href = "/vendor";
+      //   } else if (user.role === "admin") {
+      //     window.location.href = "/admin";
+      //   } else {
+      //     window.location.href = "/";
+      //   }
+      // }
     } catch {
       toast.error("Something went wrong, please try again.", { id: toastId });
     }
