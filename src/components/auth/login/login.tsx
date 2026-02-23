@@ -42,7 +42,7 @@ const Login = () => {
         toast.error(error.message, { id: toastId });
         return;
       }
-      
+
       if (data) {
         const user = data.user as typeof data.user & { role: string };
 
