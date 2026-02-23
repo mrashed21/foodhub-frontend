@@ -45,7 +45,7 @@ export const useCategories = ({
   search,
 }: GetPaginationParams) => {
   return useQuery({
-    queryKey: ["categories", page, limit, search],
+    queryKey: ["categories/admin", page, limit, search],
     queryFn: () => getCategoriesApi({ page, limit, search }),
     // keepPreviousData: true,
   });
@@ -98,7 +98,7 @@ export const useCreateCategory = () => {
   return useMutation({
     mutationFn: createCategoryApi,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["categories"] });
+      queryClient.invalidateQueries({ queryKey: ["categories/admin"] });
     },
   });
 };
@@ -122,7 +122,7 @@ export const useUpdateCategory = () => {
   return useMutation({
     mutationFn: updateCategoryApi,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["categories"] });
+      queryClient.invalidateQueries({ queryKey: ["categories/admin"] });
     },
   });
 };
@@ -140,7 +140,7 @@ export const useDeleteCategory = () => {
   return useMutation({
     mutationFn: deleteCategoryApi,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["categories"] });
+      queryClient.invalidateQueries({ queryKey: ["categories/admin"] });
     },
   });
 };
