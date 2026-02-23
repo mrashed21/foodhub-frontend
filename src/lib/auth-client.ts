@@ -1,18 +1,5 @@
-// import { createAuthClient } from "better-auth/react";
-
-// export const authClient = createAuthClient({
-//   baseURL: "https://backend-foodhub-mrashed21.vercel.app",
-//   fetchOptions: {
-//     credentials: "include",
-//   },
-// });
-
 import { createAuthClient } from "better-auth/react";
-
 export const authClient = createAuthClient({
-  // baseURL: typeof window !== "undefined" ? window.location.origin : "",
-  baseURL: "https://backend-foodhub-mrashed21.vercel.app/api/auth",
-  fetchOptions: {
-    credentials: "include",
-  },
+  /** The base URL of the server (optional if you're using the same domain) */
+  baseURL: "https://backend-foodhub-mrashed21.vercel.app",
 });
