@@ -129,8 +129,6 @@ export const useOrdersDetails = (id: string) => {
   });
 };
 
-
-
 // ! UPDATE ORDER STATUS
 
 const updateOrderStatusApi = async (payload: {
