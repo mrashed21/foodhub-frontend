@@ -17,13 +17,10 @@ const VerifyEmail = () => {
       }
 
       try {
-        const res = await fetch(
-          `https://backend-foodhub-mrashed21.vercel.app/api/auth/verify-email?token=${token}`,
-          {
-            method: "GET",
-            credentials: "include",
-          },
-        );
+        const res = await fetch(`/api/auth/verify-email?token=${token}`, {
+          method: "GET",
+          credentials: "include",
+        });
 
         if (!res.ok) {
           toast.error("Verification failed or link expired");

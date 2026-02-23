@@ -86,15 +86,12 @@ const Register = () => {
 
   const onSubmit = async (data: RegisterFormValues) => {
     try {
-      const res = await fetch(
-        `https://backend-foodhub-mrashed21.vercel.app/api/auth/sign-up/email`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          credentials: "include",
-          body: JSON.stringify(data),
-        },
-      );
+      const res = await fetch(`/api/auth/sign-up/email`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(data),
+      });
 
       const result = await res.json();
 
@@ -129,14 +126,11 @@ const Register = () => {
     if (!email) return;
 
     try {
-      const res = await fetch(
-        `https://backend-foodhub-mrashed21.vercel.app/api/auth/send-verification-email`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email }),
-        },
-      );
+      const res = await fetch(`/api/auth/send-verification-email`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
 
       if (!res.ok) {
         toast.error("Failed to resend email");
