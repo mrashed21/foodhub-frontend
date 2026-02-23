@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { Roles } from "./hook/role";
-import { userService } from "./service/user.service";
+import { Roles } from "./src/hook/role";
+import { userService } from "./src/service/user.service";
 // import { Roles } from "./src/hook/role";
 // import { userService } from "./src/service/user.service";
 
