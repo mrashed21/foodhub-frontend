@@ -41,7 +41,7 @@ export interface AdminStats {
 }
 
 const getAdminStatsApi = async () => {
-  const { data } = await api.get("/admin/stats");
+  const { data } = await api.get("/stats/admin");
   return data;
 };
 
